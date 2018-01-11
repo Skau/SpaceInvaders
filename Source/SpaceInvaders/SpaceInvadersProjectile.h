@@ -6,13 +6,20 @@
 #include "GameFramework/Actor.h"
 #include "SpaceInvadersProjectile.generated.h"
 
+// Forward Declarations
 class UProjectileMovementComponent;
 class UStaticMeshComponent;
+class AEnemy;
+class SpaceInvadersPawn;
 
 UCLASS(config=Game)
 class ASpaceInvadersProjectile : public AActor
 {
 	GENERATED_BODY()
+
+	//UFUNCTION()
+	//void OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
+
 
 	/** Sphere collision component */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Projectile, meta = (AllowPrivateAccess = "true"))
@@ -33,5 +40,8 @@ public:
 	FORCEINLINE UStaticMeshComponent* GetProjectileMesh() const { return ProjectileMesh; }
 	/** Returns ProjectileMovement subobject **/
 	FORCEINLINE UProjectileMovementComponent* GetProjectileMovement() const { return ProjectileMovement; }
+
+private:
+	APawn* PlayerPawn;
 };
 

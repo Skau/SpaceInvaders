@@ -6,6 +6,10 @@
 #include "GameFramework/Character.h"
 #include "SpaceInvadersPawn.generated.h"
 
+// Forward Declarations
+class AEnemy;
+class ASpaceInvadersGameMode;
+
 UCLASS(Blueprintable)
 class ASpaceInvadersPawn : public APawn
 {
@@ -17,6 +21,10 @@ class ASpaceInvadersPawn : public APawn
 
 public:
 	ASpaceInvadersPawn();
+
+	UFUNCTION()
+	void OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
+
 
 	/** Offset from the ships location to spawn projectiles */
 	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite )
@@ -50,6 +58,14 @@ public:
 	static const FName MoveRightBinding;
 	static const FName FireForwardBinding;
 
+	UFUNCTION(BlueprintCallable)
+	bool CheckIfDead();
+
+	UFUNCTION(BlueprintCallable)
+	int GetShipsKilled();
+
+	void SetShipsKilled();
+
 private:
 
 	/* Flag to control firing  */
@@ -57,6 +73,10 @@ private:
 
 	/** Handle for efficient management of ShotTimerExpired timer */
 	FTimerHandle TimerHandle_ShotTimerExpired;
+
+	bool bIsDead;
+	
+	int EnemyShipsKilled;
 
 public:
 	/** Returns ShipMeshComponent subobject **/

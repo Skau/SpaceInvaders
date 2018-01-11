@@ -10,6 +10,8 @@
 #include "Engine/StaticMesh.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundBase.h"
+#include "Enemy.h"
+#include "SpaceInvadersGameMode.h"
 
 const FName ASpaceInvadersPawn::MoveForwardBinding("MoveForward");
 const FName ASpaceInvadersPawn::MoveRightBinding("MoveRight");
@@ -17,13 +19,18 @@ const FName ASpaceInvadersPawn::FireForwardBinding("FireForward");
 
 ASpaceInvadersPawn::ASpaceInvadersPawn()
 {	
+
+	// To enable on hit events
+	OnActorHit.AddDynamic(this, &ASpaceInvadersPawn::OnHit);
+
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> ShipMesh(TEXT("/Game/Meshes/PlayerMesh.PlayerMesh"));
 	// Create the mesh component
 	ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMesh"));
 	RootComponent = ShipMeshComponent;
 	ShipMeshComponent->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
 	ShipMeshComponent->SetStaticMesh(ShipMesh.Object);
-	
+	ShipMeshComponent->SetNotifyRigidBodyCollision(true);
+
 	// Cache our sound effect
 	static ConstructorHelpers::FObjectFinder<USoundBase> FireAudio(TEXT("/Game/Audio/ProjectileSound.ProjectileSound"));
 	FireSound = FireAudio.Object;
@@ -34,6 +41,22 @@ ASpaceInvadersPawn::ASpaceInvadersPawn()
 	GunOffset = FVector(90.f, 0.f, 0.f);
 	FireRate = .25f;
 	bCanFire = true;
+	bIsDead = false;
+	EnemyShipsKilled = 0;
+}
+
+void ASpaceInvadersPawn::OnHit(AActor * SelfActor, AActor * OtherActor, FVector NormalImpulse, const FHitResult & Hit)
+{
+	if (OtherActor->IsA(AEnemy::StaticClass()))
+	{
+		AActor* Enemy(Cast<AEnemy>(OtherActor));
+		if (Enemy)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Player just hit %s"), *Enemy->GetName())
+			ShipMeshComponent->ToggleVisibility(false);
+			bIsDead = true;
+		}
+	}
 }
 
 void ASpaceInvadersPawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
@@ -61,15 +84,14 @@ void ASpaceInvadersPawn::Tick(float DeltaSeconds)
 	// If non-zero size, move this actor
 	if (Movement.SizeSquared() > 0.0f)
 	{
-		const FRotator NewRotation = Movement.Rotation();
 		FHitResult Hit(1.f);
-		RootComponent->MoveComponent(Movement, NewRotation, true, &Hit);
+		RootComponent->MoveComponent(Movement, FRotator(0), true, &Hit);
 		
 		if (Hit.IsValidBlockingHit())
 		{
 			const FVector Normal2D = Hit.Normal.GetSafeNormal2D();
 			const FVector Deflection = FVector::VectorPlaneProject(Movement, Normal2D) * (1.f - Hit.Time);
-			RootComponent->MoveComponent(Deflection, NewRotation, true);
+			RootComponent->MoveComponent(Deflection, FRotator(0), true);
 		}
 	}
 	
@@ -96,7 +118,6 @@ void ASpaceInvadersPawn::FireShot(FVector FireDirection)
 			// spawn the projectile
 			World->SpawnActor<ASpaceInvadersProjectile>(SpawnLocation, FireRotation);
 		}
-
 		bCanFire = false;
 		World->GetTimerManager().SetTimer(TimerHandle_ShotTimerExpired, this, &ASpaceInvadersPawn::ShotTimerExpired, FireRate);
 
@@ -113,5 +134,20 @@ void ASpaceInvadersPawn::FireShot(FVector FireDirection)
 void ASpaceInvadersPawn::ShotTimerExpired()
 {
 	bCanFire = true;
+}
+
+bool ASpaceInvadersPawn::CheckIfDead()
+{
+	return bIsDead;
+}
+
+int ASpaceInvadersPawn::GetShipsKilled()
+{
+	return EnemyShipsKilled;
+}
+
+void ASpaceInvadersPawn::SetShipsKilled()
+{
+	EnemyShipsKilled++;
 }
 

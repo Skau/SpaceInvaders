@@ -6,6 +6,11 @@
 #include "GameFramework/GameModeBase.h"
 #include "SpaceInvadersGameMode.generated.h"
 
+
+// Forward declarations
+class AEnemy;
+class ASpawnPoint;
+
 UCLASS(MinimalAPI)
 class ASpaceInvadersGameMode : public AGameModeBase
 {
@@ -13,6 +18,34 @@ class ASpaceInvadersGameMode : public AGameModeBase
 
 public:
 	ASpaceInvadersGameMode();
+
+	virtual void BeginPlay() override;
+
+	virtual void Tick(float DeltaSeconds) override;
+
+	UFUNCTION(BlueprintCallable)
+	int GetTotalEnemyShips();
+
+	void EndGame();
+
+private:
+
+	void CanNowSpawnNewShip();
+
+	void SetTotalEnemyShips();
+
+	int TotalEnemyShips;
+
+	bool bCanSpawn;
+
+	bool bPlayerHitByEnemy;
+
+	float SpawnRate = 3.f;
+
+	FTimerHandle SpawnTimerHandle;
+
+	TArray<ASpawnPoint*> SpawnPoints;
+
 };
 
 

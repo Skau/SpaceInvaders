@@ -6,8 +6,19 @@
 #include "Components/StaticMeshComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Engine/StaticMesh.h"
+#include "Kismet/GameplayStatics.h"
+#include "SpaceInvadersPawn.h"
+#include "Enemy.h"
 
-ASpaceInvadersProjectile::ASpaceInvadersProjectile() 
+
+
+
+//void ASpaceInvadersProjectile::OnHit(AActor * SelfActor, AActor * OtherActor, FVector NormalImpulse, const FHitResult & Hit)
+//{
+//
+//}
+
+ASpaceInvadersProjectile::ASpaceInvadersProjectile()
 {
 	// Static reference to the mesh to use for the projectile
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> ProjectileMeshAsset(TEXT("/Game/Meshes/PlayerProjectile.PlayerProjectile"));
@@ -31,6 +42,8 @@ ASpaceInvadersProjectile::ASpaceInvadersProjectile()
 
 	// Die after 3 seconds by default
 	InitialLifeSpan = 3.0f;
+
+	PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 }
 
 void ASpaceInvadersProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
@@ -40,6 +53,15 @@ void ASpaceInvadersProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* Other
 	{
 		OtherComp->AddImpulseAtLocation(GetVelocity() * 20.0f, GetActorLocation());
 	}
-
+	else if	(OtherActor->IsA(AEnemy::StaticClass()))
+	{
+		AActor* Enemy(Cast<AEnemy>(OtherActor));
+		if (Enemy)
+		{
+			Enemy->Destroy();
+			ASpaceInvadersPawn* Player = Cast<ASpaceInvadersPawn>(PlayerPawn);
+			Player->SetShipsKilled();
+		}
+	}
 	Destroy();
 }
