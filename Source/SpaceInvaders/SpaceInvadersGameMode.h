@@ -24,23 +24,63 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 
 	UFUNCTION(BlueprintCallable)
-	int GetTotalEnemyShips();
+	int GetWavesLeft();
+
+	UFUNCTION(BlueprintCallable)
+	int GetEnemiesLeftToSpawn();
+
+	UFUNCTION(BlueprintCallable)
+	int GetShipsKilled();
+
+	UFUNCTION(BlueprintCallable)
+	int GetEnemiesLeftOnField();
+
+	UFUNCTION(BlueprintCallable)
+	int GetTimerToSpawn();
+
+	UFUNCTION(BlueprintCallable)
+	bool CheckIfGameIsOver();
+
+	UFUNCTION(BlueprintCallable)
+	bool GetPlayerWon();
+
+	void SetShipsKilled();
+
+	void SetEnemiesLeftToSpawn();
 
 	void EndGame();
+
+	bool bPlayerIsDead;
+
+	bool bIsGameOver;
+
+	bool bEnemyHitTrigger;
 
 private:
 
 	void CanNowSpawnNewShip();
 
-	void SetTotalEnemyShips();
+	void SetEnemiesLeftOnField();
 
-	int TotalEnemyShips;
+	bool bIsPlayerDead();
+
+	int TotalWavesLeft;
+
+	int EnemiesLeftToSpawn;
+	
+	int EnemyShipsKilled;
+
+	int EnemiesLeftOnField;
+
+	bool bPlayerWon;
 
 	bool bCanSpawn;
 
 	bool bPlayerHitByEnemy;
 
-	float SpawnRate = 3.f;
+	float SpawnRate;
+
+	float Timer = SpawnRate;
 
 	FTimerHandle SpawnTimerHandle;
 

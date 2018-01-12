@@ -41,8 +41,6 @@ ASpaceInvadersPawn::ASpaceInvadersPawn()
 	GunOffset = FVector(90.f, 0.f, 0.f);
 	FireRate = .25f;
 	bCanFire = true;
-	bIsDead = false;
-	EnemyShipsKilled = 0;
 }
 
 void ASpaceInvadersPawn::OnHit(AActor * SelfActor, AActor * OtherActor, FVector NormalImpulse, const FHitResult & Hit)
@@ -54,7 +52,8 @@ void ASpaceInvadersPawn::OnHit(AActor * SelfActor, AActor * OtherActor, FVector 
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Player just hit %s"), *Enemy->GetName())
 			ShipMeshComponent->ToggleVisibility(false);
-			bIsDead = true;
+			auto GameMode = (ASpaceInvadersGameMode*)(GetWorld()->GetAuthGameMode());
+			GameMode->bPlayerIsDead = true;
 		}
 	}
 }
@@ -134,20 +133,5 @@ void ASpaceInvadersPawn::FireShot(FVector FireDirection)
 void ASpaceInvadersPawn::ShotTimerExpired()
 {
 	bCanFire = true;
-}
-
-bool ASpaceInvadersPawn::CheckIfDead()
-{
-	return bIsDead;
-}
-
-int ASpaceInvadersPawn::GetShipsKilled()
-{
-	return EnemyShipsKilled;
-}
-
-void ASpaceInvadersPawn::SetShipsKilled()
-{
-	EnemyShipsKilled++;
 }
 

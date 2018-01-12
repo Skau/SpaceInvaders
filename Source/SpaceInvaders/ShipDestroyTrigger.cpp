@@ -1,7 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "ShipDestroyTrigger.h"
+#include "Engine/World.h"
 #include "Components/BoxComponent.h"
+#include "SpaceInvadersGameMode.h"
 #include "Enemy.h"
 
 // Sets default values
@@ -14,6 +16,8 @@ AShipDestroyTrigger::AShipDestroyTrigger()
 	if (TriggerVolume == nullptr) { return; }
 
 	RootComponent = TriggerVolume;
+
+
 }
 
 // Called when the game starts or when spawned
@@ -39,6 +43,8 @@ void AShipDestroyTrigger::OnBeginOverlap(UPrimitiveComponent * OverlappedComp, A
 		if (Enemy)
 		{
 			Enemy->Destroy();
+			auto GameMode = (ASpaceInvadersGameMode*)(GetWorld()->GetAuthGameMode());
+			GameMode->bEnemyHitTrigger = true;
 		}
 	}
 }

@@ -7,6 +7,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Engine/StaticMesh.h"
 #include "Kismet/GameplayStatics.h"
+#include "SpaceInvadersGameMode.h"
 #include "SpaceInvadersPawn.h"
 #include "Enemy.h"
 
@@ -59,8 +60,8 @@ void ASpaceInvadersProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* Other
 		if (Enemy)
 		{
 			Enemy->Destroy();
-			ASpaceInvadersPawn* Player = Cast<ASpaceInvadersPawn>(PlayerPawn);
-			Player->SetShipsKilled();
+			auto GameMode = (ASpaceInvadersGameMode*)(GetWorld()->GetAuthGameMode());
+			GameMode->SetShipsKilled();
 		}
 	}
 	Destroy();

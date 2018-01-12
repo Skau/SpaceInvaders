@@ -58,14 +58,6 @@ public:
 	static const FName MoveRightBinding;
 	static const FName FireForwardBinding;
 
-	UFUNCTION(BlueprintCallable)
-	bool CheckIfDead();
-
-	UFUNCTION(BlueprintCallable)
-	int GetShipsKilled();
-
-	void SetShipsKilled();
-
 private:
 
 	/* Flag to control firing  */
@@ -74,9 +66,8 @@ private:
 	/** Handle for efficient management of ShotTimerExpired timer */
 	FTimerHandle TimerHandle_ShotTimerExpired;
 
-	bool bIsDead;
-	
-	int EnemyShipsKilled;
+
+
 
 public:
 	/** Returns ShipMeshComponent subobject **/

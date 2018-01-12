@@ -32,9 +32,7 @@ void AEnemy::OnBeginOverlap(UPrimitiveComponent * OverlappedComp, AActor * Other
 
 	if (OtherActor == PlayerPawn)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s killed the player!"), *this->GetName())
-		auto GameMode = (ASpaceInvadersGameMode*)(GetWorld()->GetAuthGameMode());
-		GameMode->EndGame();
+		UE_LOG(LogTemp, Warning, TEXT("%s just hit the player!"), *this->GetName())
 	}
 }
 

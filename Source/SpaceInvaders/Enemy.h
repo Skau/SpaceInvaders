@@ -27,7 +27,7 @@ public:
 
 	/* The speed the ship */
 	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
-	float MoveSpeed = 250.f;
+	float MoveSpeed = 100.f; //default 250.f
 
 public:	
 	// Called every frame
