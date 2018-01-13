@@ -16,8 +16,6 @@ AShipDestroyTrigger::AShipDestroyTrigger()
 	if (TriggerVolume == nullptr) { return; }
 
 	RootComponent = TriggerVolume;
-
-
 }
 
 // Called when the game starts or when spawned

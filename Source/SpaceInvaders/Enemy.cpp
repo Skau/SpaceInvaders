@@ -49,12 +49,6 @@ void AEnemy::Tick(float DeltaTime)
 	{
 		Move(DeltaTime);
 	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%s just hit the player!"), *this->GetName())
-	}
-
-
 }
 
 void AEnemy::Move(float DeltaTime)

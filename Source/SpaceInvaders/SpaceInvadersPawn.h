@@ -25,7 +25,6 @@ public:
 	UFUNCTION()
 	void OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
 
-
 	/** Offset from the ships location to spawn projectiles */
 	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite )
 	FVector GunOffset;
@@ -59,15 +58,11 @@ public:
 	static const FName FireForwardBinding;
 
 private:
-
 	/* Flag to control firing  */
 	uint32 bCanFire : 1;
 
 	/** Handle for efficient management of ShotTimerExpired timer */
 	FTimerHandle TimerHandle_ShotTimerExpired;
-
-
-
 
 public:
 	/** Returns ShipMeshComponent subobject **/

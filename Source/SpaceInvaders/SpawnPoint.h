@@ -21,6 +21,4 @@ public:
 	ASpawnPoint();
 
 	void SpawnEnemyShip();
-
-	
 };

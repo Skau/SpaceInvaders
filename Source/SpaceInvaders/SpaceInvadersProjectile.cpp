@@ -8,14 +8,11 @@
 #include "Engine/StaticMesh.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Actor.h"
+#include "Engine/World.h"
 #include "SpaceInvadersGameMode.h"
 #include "SpaceInvadersPawn.h"
 #include "Enemy.h"
 
-
-
-
-//void ASpaceInvadersProjectile::OnHit(AActor * SelfActor, AActor * OtherActor, FVector NormalImpulse, const FHitResult & Hit)
 //{
 //
 //}
@@ -44,7 +41,6 @@ ASpaceInvadersProjectile::ASpaceInvadersProjectile()
 
 	// Die after 3 seconds by default
 	InitialLifeSpan = 3.0f;
-
 
 	ProjectileMesh->SetRelativeScale3D(FVector(2, 2, 2));
 
