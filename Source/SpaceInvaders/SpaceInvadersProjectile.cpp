@@ -7,6 +7,7 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Engine/StaticMesh.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameFramework/Actor.h"
 #include "SpaceInvadersGameMode.h"
 #include "SpaceInvadersPawn.h"
 #include "Enemy.h"
@@ -43,6 +44,9 @@ ASpaceInvadersProjectile::ASpaceInvadersProjectile()
 
 	// Die after 3 seconds by default
 	InitialLifeSpan = 3.0f;
+
+
+	ProjectileMesh->SetRelativeScale3D(FVector(2, 2, 2));
 
 	PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 }

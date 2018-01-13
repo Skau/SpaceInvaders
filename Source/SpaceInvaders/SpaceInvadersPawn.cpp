@@ -50,7 +50,6 @@ void ASpaceInvadersPawn::OnHit(AActor * SelfActor, AActor * OtherActor, FVector 
 		AActor* Enemy(Cast<AEnemy>(OtherActor));
 		if (Enemy)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Player just hit %s"), *Enemy->GetName())
 			ShipMeshComponent->ToggleVisibility(false);
 			auto GameMode = (ASpaceInvadersGameMode*)(GetWorld()->GetAuthGameMode());
 			GameMode->bPlayerIsDead = true;

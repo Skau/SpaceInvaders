@@ -44,6 +44,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool GetPlayerWon();
 
+	UFUNCTION(BlueprintCallable)
+	int GetTotalWaves();
+
 	void SetShipsKilled();
 
 	void SetEnemiesLeftToSpawn();
@@ -64,7 +67,9 @@ private:
 
 	bool bIsPlayerDead();
 
-	int TotalWavesLeft;
+	int TotalWaves;
+
+	int TotalWavesLeft = TotalWaves;
 
 	int EnemiesLeftToSpawn;
 	

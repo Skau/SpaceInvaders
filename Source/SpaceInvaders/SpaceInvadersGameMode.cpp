@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Math/UnrealMathUtility.h"
 #include "Engine/World.h"
+#include "TimerManager.h"
 #include "Enemy.h"
 #include "SpawnPoint.h"
 
@@ -22,6 +23,7 @@ ASpaceInvadersGameMode::ASpaceInvadersGameMode()
 	bEnemyHitTrigger = false;
 	EnemiesLeftOnField = 0;
 	EnemyShipsKilled = 0;
+	TotalWaves = 5;
 	TotalWavesLeft = 5;
 	SpawnRate = 5.f;
 	EnemiesLeftToSpawn = 8 * TotalWavesLeft;
@@ -114,6 +116,11 @@ bool ASpaceInvadersGameMode::bIsPlayerDead()
 bool ASpaceInvadersGameMode::GetPlayerWon()
 {
 	return bPlayerWon;
+}
+
+int ASpaceInvadersGameMode::GetTotalWaves()
+{
+	return TotalWaves;
 }
 
 void ASpaceInvadersGameMode::SetShipsKilled()

@@ -7,6 +7,7 @@
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
 #include "SpaceInvadersGameMode.h"
+#include "SpaceInvadersPawn.h"
 
 // Sets default values
 AEnemy::AEnemy()
@@ -18,21 +19,24 @@ AEnemy::AEnemy()
 	// Create the mesh component
 	ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMesh"));
 	RootComponent = ShipMeshComponent;
-	ShipMeshComponent->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
+	ShipMeshComponent->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
 	ShipMeshComponent->SetStaticMesh(ShipMesh.Object);
 	ShipMeshComponent->SetNotifyRigidBodyCollision(true);
-	ShipMeshComponent->OnComponentBeginOverlap.AddDynamic(this, &AEnemy::OnBeginOverlap);
-
+	ShipMeshComponent->OnComponentBeginOverlap.AddDynamic(this, &AEnemy::OnOverlapBegin);
 }
 
-void AEnemy::OnBeginOverlap(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
+void AEnemy::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {
-	// Get player pawn reference
-	auto PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
-
-	if (OtherActor == PlayerPawn)
+	if (OtherActor->IsA(ASpaceInvadersPawn::StaticClass()))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s just hit the player!"), *this->GetName())
+		AActor* Player(Cast<ASpaceInvadersPawn>(OtherActor));
+
+		if (Player)
+		{
+			bHitPlayer = true;
+			auto GameMode = (ASpaceInvadersGameMode*)(GetWorld()->GetAuthGameMode());
+			GameMode->bPlayerIsDead = true;
+		}
 	}
 }
 
@@ -41,7 +45,15 @@ void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	Move(DeltaTime);
+	if (!bHitPlayer)
+	{
+		Move(DeltaTime);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s just hit the player!"), *this->GetName())
+	}
+
 
 }
 
