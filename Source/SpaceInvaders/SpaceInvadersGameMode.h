@@ -17,11 +17,6 @@ class ASpaceInvadersGameMode : public AGameModeBase
 	GENERATED_BODY()
 
 public:
-	ASpaceInvadersGameMode();
-
-	virtual void BeginPlay() override;
-
-	virtual void Tick(float DeltaSeconds) override;
 
 	UFUNCTION(BlueprintCallable)
 	int GetWavesLeft();
@@ -49,17 +44,17 @@ public:
 
 	void SetShipsKilled();
 
-	void SetEnemiesLeftToSpawn();
-
-	void EndGame();
-
 	bool bPlayerIsDead;
-
-	bool bIsGameOver;
 
 	bool bEnemyHitTrigger;
 
 private:
+
+	ASpaceInvadersGameMode();
+
+	virtual void BeginPlay() override;
+
+	virtual void Tick(float DeltaSeconds) override;
 
 	void CanNowSpawnNewShip();
 
@@ -67,9 +62,15 @@ private:
 
 	bool bIsPlayerDead();
 
+	void SetEnemiesLeftToSpawn();
+
+	void EndGame();
+
+	bool bIsGameOver;
+
 	int TotalWaves;
 
-	int TotalWavesLeft = TotalWaves;
+	int TotalWavesLeft;
 
 	int EnemiesLeftToSpawn;
 	
@@ -85,7 +86,7 @@ private:
 
 	float SpawnRate;
 
-	float Timer = SpawnRate;
+	float Timer;
 
 	FTimerHandle SpawnTimerHandle;
 

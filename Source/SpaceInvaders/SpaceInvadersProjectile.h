@@ -21,18 +21,18 @@ class ASpaceInvadersProjectile : public AActor
 	//void OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
 
 
-	/** Sphere collision component */
+	// Sphere collision component 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Projectile, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* ProjectileMesh;
 
-	/** Projectile movement component */
+	// Projectile movement component
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	UProjectileMovementComponent* ProjectileMovement;
 
 public:
 	ASpaceInvadersProjectile();
 
-	/** Function to handle the projectile hitting something */
+	// Function to handle the projectile hitting something
 	UFUNCTION()
 	void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 

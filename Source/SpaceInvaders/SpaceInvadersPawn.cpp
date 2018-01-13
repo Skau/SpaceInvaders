@@ -13,13 +13,11 @@
 #include "Enemy.h"
 #include "SpaceInvadersGameMode.h"
 
-const FName ASpaceInvadersPawn::MoveForwardBinding("MoveForward");
 const FName ASpaceInvadersPawn::MoveRightBinding("MoveRight");
 const FName ASpaceInvadersPawn::FireForwardBinding("FireForward");
 
 ASpaceInvadersPawn::ASpaceInvadersPawn()
 {	
-
 	// To enable on hit events
 	OnActorHit.AddDynamic(this, &ASpaceInvadersPawn::OnHit);
 
@@ -45,8 +43,10 @@ ASpaceInvadersPawn::ASpaceInvadersPawn()
 
 void ASpaceInvadersPawn::OnHit(AActor * SelfActor, AActor * OtherActor, FVector NormalImpulse, const FHitResult & Hit)
 {
+	// Checks to see if the actor hit is an enemy
 	if (OtherActor->IsA(AEnemy::StaticClass()))
 	{
+		// Redundant cast for now, could probably just use OtherActor
 		AActor* Enemy(Cast<AEnemy>(OtherActor));
 		if (Enemy)
 		{
@@ -61,22 +61,14 @@ void ASpaceInvadersPawn::SetupPlayerInputComponent(class UInputComponent* Player
 {
 	check(PlayerInputComponent);
 
-	// set up gameplay key bindings
-	PlayerInputComponent->BindAxis(MoveForwardBinding);
 	PlayerInputComponent->BindAxis(MoveRightBinding);
 	PlayerInputComponent->BindAxis(FireForwardBinding);
 }
 
 void ASpaceInvadersPawn::Tick(float DeltaSeconds)
 {
-	// Find movement direction
-	const float ForwardValue = GetInputAxisValue(MoveForwardBinding);
 	const float RightValue = GetInputAxisValue(MoveRightBinding);
-
-	// Clamp max size so that (X=1, Y=1) doesn't cause faster movement in diagonal directions
-	const FVector MoveDirection = FVector(ForwardValue, RightValue, 0.f).GetClampedToMaxSize(1.0f);
-
-	// Calculate  movement
+	const FVector MoveDirection = FVector(0.f, RightValue, 0.f);
 	const FVector Movement = MoveDirection * MoveSpeed * DeltaSeconds;
 
 	// If non-zero size, move this actor
@@ -96,14 +88,14 @@ void ASpaceInvadersPawn::Tick(float DeltaSeconds)
 	const bool IsFirePressed = GetInputAxisValue(FireForwardBinding);
 	if (IsFirePressed)
 	{
-		// Fire a shot
+		// Fire a shot on the x-axis only
 		FireShot(FVector(1, 0, 0));
 	}
 }
 
 void ASpaceInvadersPawn::FireShot(FVector FireDirection)
 {
-	// If we it's ok to fire again
+	// If it's ok to fire again
 	if (bCanFire == true)
 	{
 		const FRotator FireRotation = FireDirection.Rotation();

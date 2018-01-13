@@ -4,15 +4,10 @@
 #include "GameFramework/Actor.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
-#include "TimerManager.h"
 #include "Enemy.h"
-
-ASpawnPoint::ASpawnPoint()
-{
-}
 
 void ASpawnPoint::SpawnEnemyShip()
 {
-	AEnemy* SpawnedEnemy = GetWorld()->SpawnActor<AEnemy>(this->GetActorLocation(), FRotator(1, 0, 0));
+	GetWorld()->SpawnActor<AEnemy>(this->GetActorLocation(), FRotator(1, 0, 0));
 }
 

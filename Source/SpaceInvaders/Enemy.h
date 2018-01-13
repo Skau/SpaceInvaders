@@ -27,7 +27,7 @@ public:
 
 	/* The speed the ship */
 	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
-	float MoveSpeed = 100.f; //default 250.f
+	float MoveSpeed = 150.f;
 
 public:	
 	// Called every frame
@@ -36,5 +36,17 @@ public:
 private:
 	void Move(float DeltaTime);
 
+	void MoveLeftorRight();
+
+	void SetbCanMoveLeftOrRight();
+
 	bool bHitPlayer = false;
+
+	bool bCanMoveLeftOrRight;
+
+	bool Direction;
+
+	int MoveLeftOrRightRate;
+
+	FTimerHandle MoveLeftOrRightHandle;
 };

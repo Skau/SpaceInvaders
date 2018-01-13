@@ -6,6 +6,8 @@
 #include "Engine/CollisionProfile.h"
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"
+#include "TimerManager.h"
+#include "Math/UnrealMathUtility.h"
 #include "SpaceInvadersGameMode.h"
 #include "SpaceInvadersPawn.h"
 
@@ -23,6 +25,9 @@ AEnemy::AEnemy()
 	ShipMeshComponent->SetStaticMesh(ShipMesh.Object);
 	ShipMeshComponent->SetNotifyRigidBodyCollision(true);
 	ShipMeshComponent->OnComponentBeginOverlap.AddDynamic(this, &AEnemy::OnOverlapBegin);
+
+	bCanMoveLeftOrRight = true;
+	MoveLeftOrRightRate = 2.f;
 }
 
 void AEnemy::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
@@ -49,6 +54,14 @@ void AEnemy::Tick(float DeltaTime)
 	{
 		Move(DeltaTime);
 	}
+
+	if (bCanMoveLeftOrRight)
+	{
+		MoveLeftorRight();
+		bCanMoveLeftOrRight = false;
+		MoveLeftOrRightRate = FMath::RandRange(1, 3);
+		GetWorld()->GetTimerManager().SetTimer(MoveLeftOrRightHandle, this, &AEnemy::SetbCanMoveLeftOrRight, MoveLeftOrRightRate);
+	}
 }
 
 void AEnemy::Move(float DeltaTime)
@@ -58,5 +71,29 @@ void AEnemy::Move(float DeltaTime)
 	FVector NewLocation = CurrentLocation + MoveDirection * MoveSpeed * DeltaTime;
 
 	this->SetActorLocation(NewLocation);
+}
+
+void AEnemy::MoveLeftorRight()
+{
+	FVector CurrentLocation = this->GetActorLocation();
+	FVector NewLocation;
+	if (Direction)
+	{
+		FVector MoveDirection = FVector(FVector(0.f, 350.f, 0.f));
+		NewLocation = CurrentLocation + MoveDirection;
+		Direction = false;
+	}
+	else
+	{
+		FVector MoveDirection = FVector(FVector(0.f, -350.f, 0.f));
+		NewLocation = CurrentLocation + MoveDirection;
+		Direction = true;
+	}
+	this->SetActorLocation(NewLocation);
+}
+
+void AEnemy::SetbCanMoveLeftOrRight()
+{
+	bCanMoveLeftOrRight = true;
 }
 
