@@ -38,6 +38,7 @@ void ASpaceInvadersGameMode::BeginPlay()
 		SpawnPoints.Add(SpawnPoint);
 		temp++;
 	}
+
 	TotalWavesLeft = TotalWaves;
 	EnemiesLeftToSpawn = temp * TotalWavesLeft;
 }
@@ -52,6 +53,7 @@ void ASpaceInvadersGameMode::Tick(float DeltaSeconds)
 	{
 		Timer = Timer - DeltaSeconds*1;
 	}
+
 	// Updates the current Enemies on  field to the current number
 	SetEnemiesLeftOnField();
 
@@ -61,6 +63,7 @@ void ASpaceInvadersGameMode::Tick(float DeltaSeconds)
 		bIsGameOver = true;
 		EndGame();
 	}
+
 	// If there are no enemies left on the field, there are no more waves and no enemies reached the end,
 	// the player wins
 	if ((EnemiesLeftOnField == 0 && TotalWavesLeft == 0) && !bEnemyHitTrigger)

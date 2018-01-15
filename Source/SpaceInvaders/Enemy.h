@@ -34,6 +34,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 private:
+
 	void Move(float DeltaTime);
 
 	void MoveLeftorRight();

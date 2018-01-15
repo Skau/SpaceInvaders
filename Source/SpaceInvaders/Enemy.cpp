@@ -3,6 +3,7 @@
 #include "Enemy.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Components/StaticMeshComponent.h"
+#include "Particles/ParticleSystemComponent.h"
 #include "Engine/CollisionProfile.h"
 #include "Engine/World.h"
 #include "Kismet/GameplayStatics.h"

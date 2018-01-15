@@ -18,5 +18,10 @@ class SPACEINVADERS_API ASpawnPoint : public ATargetPoint
 	GENERATED_BODY()
 
 public:
+
+	ASpawnPoint();
+
 	void SpawnEnemyShip();
+
+	TSubclassOf<AEnemy> Enemy_BP;
 };
