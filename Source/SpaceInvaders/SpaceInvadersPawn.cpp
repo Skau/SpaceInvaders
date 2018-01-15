@@ -43,18 +43,6 @@ ASpaceInvadersPawn::ASpaceInvadersPawn()
 
 void ASpaceInvadersPawn::OnHit(AActor * SelfActor, AActor * OtherActor, FVector NormalImpulse, const FHitResult & Hit)
 {
-	// Checks to see if the actor hit is an enemy
-	if (OtherActor->IsA(AEnemy::StaticClass()))
-	{
-		// Redundant cast for now, could probably just use OtherActor
-		AActor* Enemy(Cast<AEnemy>(OtherActor));
-		if (Enemy)
-		{
-			ShipMeshComponent->ToggleVisibility(false);
-			auto GameMode = (ASpaceInvadersGameMode*)(GetWorld()->GetAuthGameMode());
-			GameMode->bPlayerIsDead = true;
-		}
-	}
 }
 
 void ASpaceInvadersPawn::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)

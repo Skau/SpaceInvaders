@@ -7,12 +7,13 @@
 #include "Math/UnrealMathUtility.h"
 #include "Engine/World.h"
 #include "TimerManager.h"
+#include "SpaceInvadersGameInstance.h"
 #include "Enemy.h"
 #include "SpawnPoint.h"
 
+// Init default variables on construction (variables that cannot be changed through in-game settings)
 ASpaceInvadersGameMode::ASpaceInvadersGameMode()
 {
-	// Sets default variables
 	DefaultPawnClass = ASpaceInvadersPawn::StaticClass();
 	PrimaryActorTick.bCanEverTick = true;
 	bCanSpawn = true;
@@ -23,24 +24,21 @@ ASpaceInvadersGameMode::ASpaceInvadersGameMode()
 	bEnemyHitTrigger = false;
 	EnemiesLeftOnField = 0;
 	EnemyShipsKilled = 0;
-	SpawnRate = 3.f;
 }
 
+// Init the game variables from the in-game game settings during runtime (Set in gameinstance)
 void ASpaceInvadersGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+	GameInstance = Cast<USpaceInvadersGameInstance>(GetWorld()->GetGameInstance());
+	
+	int numberOfSpawns = FindAllSpawnPoints();
 
-	int temp = 0;
-	// Finds all Spawnpoints and adds them to the array
-	for (TActorIterator<ASpawnPoint> It(GetWorld(), ASpawnPoint::StaticClass()); It; ++It)
-	{
-		ASpawnPoint* SpawnPoint = Cast<ASpawnPoint>(*It);
-		SpawnPoints.Add(SpawnPoint);
-		temp++;
-	}
-
+	TotalWaves = GameInstance->GetTotalWaves();
 	TotalWavesLeft = TotalWaves;
-	EnemiesLeftToSpawn = temp * TotalWavesLeft;
+	EnemiesLeftToSpawn = numberOfSpawns * TotalWavesLeft;
+
+	SpawnRate = GameInstance->GetSpawnRate();
 }
 
 void ASpaceInvadersGameMode::Tick(float DeltaSeconds)
@@ -57,6 +55,45 @@ void ASpaceInvadersGameMode::Tick(float DeltaSeconds)
 	// Updates the current Enemies on  field to the current number
 	SetEnemiesLeftOnField();
 
+	WinCheck();
+
+	// Checks if a new wave can spawn
+	if (bCanSpawn && TotalWavesLeft != 0)
+	{
+		bCanSpawn = false;
+		SpawnNewWave();
+		// Resets the timer, removes a wave and starts the timer handle for bCanSpawn
+		Timer = SpawnRate;
+		TotalWavesLeft--;
+		GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle, this, &ASpaceInvadersGameMode::CanNowSpawnNewShip, SpawnRate);
+	}
+}
+
+// Finds all Spawnpoints, add them to the array and return the number
+int ASpaceInvadersGameMode::FindAllSpawnPoints()
+{
+	int temp = 0;
+	for (TActorIterator<ASpawnPoint> It(GetWorld(), ASpawnPoint::StaticClass()); It; ++It)
+	{
+		ASpawnPoint* SpawnPoint = Cast<ASpawnPoint>(*It);
+		SpawnPoints.Add(SpawnPoint);
+		temp++;
+	}
+	return temp;
+}
+
+// Loops through all spawnpoints and spawns an enemy
+void ASpaceInvadersGameMode::SpawnNewWave()
+{
+	for (ASpawnPoint* SpawnPoint : SpawnPoints)
+	{
+		SpawnPoint->SpawnEnemyShip();
+		SetEnemiesLeftToSpawn();
+	}
+}
+
+void ASpaceInvadersGameMode::WinCheck()
+{
 	// If the player is dead or an enemy reaches the end, the player loses
 	if (bIsPlayerDead() || bEnemyHitTrigger)
 	{
@@ -72,22 +109,19 @@ void ASpaceInvadersGameMode::Tick(float DeltaSeconds)
 		bPlayerWon = true;
 		EndGame();
 	}
+}
 
-	// Checks if a new wave can spawn
-	if (bCanSpawn && TotalWavesLeft != 0)
+// Iterates through all enemies on the field
+void ASpaceInvadersGameMode::SetEnemiesLeftOnField()
+{
+	int temp = 0;
+
+	for (TActorIterator<AEnemy> It(GetWorld(), AEnemy::StaticClass()); It; ++It)
 	{
-		bCanSpawn = false;
-		// Loops through all spawnpoints and spawns an enemy
-		for (ASpawnPoint* SpawnPoint : SpawnPoints)
-		{
-			SpawnPoint->SpawnEnemyShip();
-			SetEnemiesLeftToSpawn();
-		}
-		// Resets the timer, removes a wave and starts the timer handle for bCanSpawn
-		Timer = SpawnRate;
-		TotalWavesLeft--;
-		GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle, this, &ASpaceInvadersGameMode::CanNowSpawnNewShip, SpawnRate);
+		temp++;
 	}
+
+	EnemiesLeftOnField = temp;
 }
 
 int ASpaceInvadersGameMode::GetWavesLeft()
@@ -130,11 +164,6 @@ bool ASpaceInvadersGameMode::GetPlayerWon()
 	return bPlayerWon;
 }
 
-int ASpaceInvadersGameMode::GetTotalWaves()
-{
-	return TotalWaves;
-}
-
 void ASpaceInvadersGameMode::SetShipsKilled()
 {
 	EnemyShipsKilled++;
@@ -153,17 +182,4 @@ void ASpaceInvadersGameMode::EndGame()
 void ASpaceInvadersGameMode::CanNowSpawnNewShip()
 {
 	bCanSpawn = true;
-}
-
-// Iterates through all enemies on the field
-void ASpaceInvadersGameMode::SetEnemiesLeftOnField()
-{
-	int temp = 0;
-
-	for (TActorIterator<AEnemy> It(GetWorld(), AEnemy::StaticClass()); It; ++It)
-	{
-		temp++;
-	}
-
-	EnemiesLeftOnField = temp;
 }
