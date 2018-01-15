@@ -37,7 +37,7 @@ private:
 
 	void Move(float DeltaTime);
 
-	void MoveLeftorRight();
+	void MoveLeftorRight(float DeltaTime);
 
 	void SetbCanMoveLeftOrRight();
 

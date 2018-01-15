@@ -22,9 +22,6 @@ public:
 	int GetWavesLeft();
 
 	UFUNCTION(BlueprintCallable)
-	void SetTotalWaves(int NewTotalWaves);
-
-	UFUNCTION(BlueprintCallable)
 	int GetEnemiesLeftToSpawn();
 
 	UFUNCTION(BlueprintCallable)

@@ -95,11 +95,6 @@ int ASpaceInvadersGameMode::GetWavesLeft()
 	return TotalWavesLeft;
 }
 
-void ASpaceInvadersGameMode::SetTotalWaves(int NewTotalWaves)
-{
-	TotalWaves = NewTotalWaves;
-}
-
 int ASpaceInvadersGameMode::GetEnemiesLeftToSpawn()
 {
 	return EnemiesLeftToSpawn;

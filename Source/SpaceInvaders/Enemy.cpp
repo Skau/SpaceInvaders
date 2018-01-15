@@ -58,39 +58,39 @@ void AEnemy::Tick(float DeltaTime)
 
 	if (bCanMoveLeftOrRight)
 	{
-		MoveLeftorRight();
 		bCanMoveLeftOrRight = false;
 		MoveLeftOrRightRate = FMath::RandRange(1, 3);
 		GetWorld()->GetTimerManager().SetTimer(MoveLeftOrRightHandle, this, &AEnemy::SetbCanMoveLeftOrRight, MoveLeftOrRightRate);
+		MoveLeftorRight(DeltaTime);
 	}
 }
 
 void AEnemy::Move(float DeltaTime)
 {
-	FVector CurrentLocation = this->GetActorLocation();
-	FVector MoveDirection = FVector(FVector(-1.f, 0.f, 0.f));
+	FVector CurrentLocation = GetActorLocation();
+	FVector MoveDirection = FVector(-1.f, 0.f, 0.f);
 	FVector NewLocation = CurrentLocation + MoveDirection * MoveSpeed * DeltaTime;
 
-	this->SetActorLocation(NewLocation);
+	SetActorLocation(NewLocation);
 }
 
-void AEnemy::MoveLeftorRight()
+void AEnemy::MoveLeftorRight(float DeltaTime)
 {
-	FVector CurrentLocation = this->GetActorLocation();
+	FVector CurrentLocation = GetActorLocation();
 	FVector NewLocation;
 	if (Direction)
 	{
-		FVector MoveDirection = FVector(FVector(0.f, 350.f, 0.f));
+		FVector MoveDirection = FVector(0.f, 350.f, 0.f);
 		NewLocation = CurrentLocation + MoveDirection;
 		Direction = false;
 	}
 	else
 	{
-		FVector MoveDirection = FVector(FVector(0.f, -350.f, 0.f));
+		FVector MoveDirection = FVector(0.f, -350.f, 0.f);
 		NewLocation = CurrentLocation + MoveDirection;
 		Direction = true;
 	}
-	this->SetActorLocation(NewLocation);
+	SetActorLocation(NewLocation);
 }
 
 void AEnemy::SetbCanMoveLeftOrRight()
