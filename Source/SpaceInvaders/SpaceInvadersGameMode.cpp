@@ -23,8 +23,6 @@ ASpaceInvadersGameMode::ASpaceInvadersGameMode()
 	bEnemyHitTrigger = false;
 	EnemiesLeftOnField = 0;
 	EnemyShipsKilled = 0;
-	TotalWaves = 10;
-	TotalWavesLeft = TotalWaves;
 	SpawnRate = 3.f;
 }
 
@@ -40,6 +38,7 @@ void ASpaceInvadersGameMode::BeginPlay()
 		SpawnPoints.Add(SpawnPoint);
 		temp++;
 	}
+	TotalWavesLeft = TotalWaves;
 	EnemiesLeftToSpawn = temp * TotalWavesLeft;
 }
 
@@ -91,6 +90,11 @@ void ASpaceInvadersGameMode::Tick(float DeltaSeconds)
 int ASpaceInvadersGameMode::GetWavesLeft()
 {
 	return TotalWavesLeft;
+}
+
+void ASpaceInvadersGameMode::SetTotalWaves(int NewTotalWaves)
+{
+	TotalWaves = NewTotalWaves;
 }
 
 int ASpaceInvadersGameMode::GetEnemiesLeftToSpawn()

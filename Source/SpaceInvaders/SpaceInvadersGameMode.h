@@ -22,6 +22,9 @@ public:
 	int GetWavesLeft();
 
 	UFUNCTION(BlueprintCallable)
+	void SetTotalWaves(int NewTotalWaves);
+
+	UFUNCTION(BlueprintCallable)
 	int GetEnemiesLeftToSpawn();
 
 	UFUNCTION(BlueprintCallable)
@@ -43,6 +46,9 @@ public:
 	int GetTotalWaves();
 
 	void SetShipsKilled();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int TotalWaves = 10;
 
 	bool bPlayerIsDead;
 
@@ -67,8 +73,6 @@ private:
 	void EndGame();
 
 	bool bIsGameOver;
-
-	int TotalWaves;
 
 	int TotalWavesLeft;
 
