@@ -20,6 +20,7 @@ ASpaceInvadersGameMode::ASpaceInvadersGameMode()
 	bPlayerHitByEnemy = false;
 	bPlayerIsDead = false;
 	bIsGameOver = false;
+	bGameIsPaused = false;
 	bPlayerWon = false;
 	bEnemyHitTrigger = false;
 	EnemiesLeftOnField = 0;
@@ -98,7 +99,7 @@ void ASpaceInvadersGameMode::WinCheck()
 	if (bIsPlayerDead() || bEnemyHitTrigger)
 	{
 		bIsGameOver = true;
-		EndGame();
+		GetWorld()->GetFirstPlayerController()->Pause();
 	}
 
 	// If there are no enemies left on the field, there are no more waves and no enemies reached the end,
@@ -107,7 +108,7 @@ void ASpaceInvadersGameMode::WinCheck()
 	{
 		bIsGameOver = true;
 		bPlayerWon = true;
-		EndGame();
+		GetWorld()->GetFirstPlayerController()->Pause();
 	}
 }
 
@@ -164,19 +165,31 @@ bool ASpaceInvadersGameMode::GetPlayerWon()
 	return bPlayerWon;
 }
 
+bool ASpaceInvadersGameMode::CheckIfGameIsPaused()
+{
+	return bGameIsPaused;
+}
+
 void ASpaceInvadersGameMode::SetShipsKilled()
 {
 	EnemyShipsKilled++;
 }
 
+void ASpaceInvadersGameMode::SetGameIsPaused()
+{
+	GetWorld()->GetFirstPlayerController()->SetPause(true);
+	bGameIsPaused = true;
+}
+
+void ASpaceInvadersGameMode::SetGameIsNotPaused()
+{
+	GetWorld()->GetFirstPlayerController()->SetPause(false);
+	bGameIsPaused = false;
+}
+
 void ASpaceInvadersGameMode::SetEnemiesLeftToSpawn()
 {
 	EnemiesLeftToSpawn--;
-}
-
-void ASpaceInvadersGameMode::EndGame()
-{
-	GetWorld()->GetFirstPlayerController()->Pause();
 }
 
 void ASpaceInvadersGameMode::CanNowSpawnNewShip()

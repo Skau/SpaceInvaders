@@ -51,6 +51,7 @@ void ASpaceInvadersPawn::SetupPlayerInputComponent(class UInputComponent* Player
 
 	PlayerInputComponent->BindAxis(MoveRightBinding);
 	PlayerInputComponent->BindAxis(FireForwardBinding);
+	PlayerInputComponent->BindAction("PauseGame", IE_Released, this, &ASpaceInvadersPawn::PauseGame);
 }
 
 void ASpaceInvadersPawn::Tick(float DeltaSeconds)
@@ -112,5 +113,11 @@ void ASpaceInvadersPawn::FireShot(FVector FireDirection)
 void ASpaceInvadersPawn::ShotTimerExpired()
 {
 	bCanFire = true;
+}
+
+void ASpaceInvadersPawn::PauseGame()
+{
+	auto GameMode = (ASpaceInvadersGameMode*)(GetWorld()->GetAuthGameMode());
+	GameMode->SetGameIsPaused();
 }
 

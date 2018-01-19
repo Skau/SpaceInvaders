@@ -33,6 +33,8 @@ public:
 	bool CheckIfGameIsOver();
 	UFUNCTION(BlueprintCallable)
 	bool GetPlayerWon();
+	UFUNCTION(BlueprintCallable)
+	bool CheckIfGameIsPaused();
 
 	// Used to increment the kill counter by the projectile
 	void SetShipsKilled();
@@ -40,6 +42,13 @@ public:
 	// Variables used for the wincheck, set from Player Pawn and Enemy Actor respectively
 	bool bPlayerIsDead;
 	bool bEnemyHitTrigger;
+
+	// Used by the UI to resume the game
+	UFUNCTION(BlueprintCallable)
+	void SetGameIsNotPaused();
+
+	// Used by the player controller (action binding) to pause the game
+	void SetGameIsPaused();
 
 private:
 	//** Functions **//
@@ -74,9 +83,6 @@ private:
 	// Checks for when the game is over
 	void WinCheck();
 
-	// Ends the game if it is over
-	void EndGame();
-
 	//** Variables **//
 
 	USpaceInvadersGameInstance* GameInstance;
@@ -102,6 +108,8 @@ private:
 	bool bCanSpawn;
 
 	bool bPlayerHitByEnemy;
+
+	bool bGameIsPaused;
 
 	float SpawnRate;
 
