@@ -34,7 +34,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool GetPlayerWon();
 
-	// Used to increment the kill counter through the projectile
+	// Used to increment the kill counter by the projectile
 	void SetShipsKilled();
 
 	// Variables used for the wincheck, set from Player Pawn and Enemy Actor respectively
@@ -44,26 +44,37 @@ public:
 private:
 	//** Functions **//
 
+	// Sets the basic variables used every game
 	ASpaceInvadersGameMode();
 
+	// Sets a few variables that cannot be set in the constructor
 	virtual void BeginPlay() override;
 
+	// Updates variables, spawns enemies and checks if the game is over
 	virtual void Tick(float DeltaSeconds) override;
 
+	// Used to spawn enemy ships
 	int FindAllSpawnPoints();
 
+	// Used by the timerhandle to set spawnrate
 	void CanNowSpawnNewShip();
-
+	
+	// Iterates through spawnpoints and calls the spawn ship function
 	void SpawnNewWave();
 
+	// Iterates through and counts current enemies on the field
 	void SetEnemiesLeftOnField();
 
+	// Returns if the player is dead
 	bool bIsPlayerDead();
 
+	// Decrements one enemy from the total number left to spawn
 	void SetEnemiesLeftToSpawn();
 
+	// Checks for when the game is over
 	void WinCheck();
 
+	// Ends the game if it is over
 	void EndGame();
 
 	//** Variables **//

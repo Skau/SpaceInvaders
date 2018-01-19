@@ -19,7 +19,6 @@ ASpawnPoint::ASpawnPoint()
 
 void ASpawnPoint::SpawnEnemyShip()
 {
-	//GetWorld()->SpawnActor<AEnemy>(this->GetActorLocation(), FRotator(1, 0, 0));
-	AEnemy* Enemy = GetWorld()->SpawnActor<AEnemy>(Enemy_BP, this->GetActorLocation(), FRotator(1, 0, 0));
+	AEnemy* Enemy = GetWorld()->SpawnActor<AEnemy>(Enemy_BP, this->GetActorLocation(), FRotator(0, 0, -180));
 }
 

@@ -30,6 +30,7 @@ ASpaceInvadersGameMode::ASpaceInvadersGameMode()
 void ASpaceInvadersGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+
 	GameInstance = Cast<USpaceInvadersGameInstance>(GetWorld()->GetGameInstance());
 	
 	int numberOfSpawns = FindAllSpawnPoints();
@@ -44,7 +45,6 @@ void ASpaceInvadersGameMode::BeginPlay()
 void ASpaceInvadersGameMode::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-
 
 	// For the countdown timer
 	if (!bCanSpawn)
