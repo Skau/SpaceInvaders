@@ -27,19 +27,25 @@ ASpaceInvadersGameMode::ASpaceInvadersGameMode()
 	EnemyShipsKilled = 0;
 }
 
-// Init the game variables from the in-game game settings during runtime (Set in gameinstance)
+// Init the game variables that has to be set at runtime
 void ASpaceInvadersGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// Gets the current game instance
 	GameInstance = Cast<USpaceInvadersGameInstance>(GetWorld()->GetGameInstance());
 	
+	// Finds all spawnpoints
 	int numberOfSpawns = FindAllSpawnPoints();
 
+	// Sets current number of waves
 	TotalWaves = GameInstance->GetTotalWaves();
+
+	// Sets waves left and total enemies to kill for the UI
 	TotalWavesLeft = TotalWaves;
 	EnemiesLeftToSpawn = numberOfSpawns * TotalWavesLeft;
 
+	// Sets the spawnrate
 	SpawnRate = GameInstance->GetSpawnRate();
 }
 
@@ -58,7 +64,7 @@ void ASpaceInvadersGameMode::Tick(float DeltaSeconds)
 
 	WinCheck();
 
-	// Checks if a new wave can spawn
+	// Spawns a new wave if conditions allow
 	if (bCanSpawn && TotalWavesLeft != 0)
 	{
 		bCanSpawn = false;
@@ -70,7 +76,7 @@ void ASpaceInvadersGameMode::Tick(float DeltaSeconds)
 	}
 }
 
-// Finds all Spawnpoints, add them to the array and return the number
+// Finds all Spawnpoints, adds them to the array and return the number
 int ASpaceInvadersGameMode::FindAllSpawnPoints()
 {
 	int temp = 0;

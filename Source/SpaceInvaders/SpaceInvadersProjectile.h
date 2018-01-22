@@ -17,10 +17,6 @@ class ASpaceInvadersProjectile : public AActor
 {
 	GENERATED_BODY()
 
-	//UFUNCTION()
-	//void OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
-
-
 	// Sphere collision component 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Projectile, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* ProjectileMesh;
@@ -40,8 +36,5 @@ public:
 	FORCEINLINE UStaticMeshComponent* GetProjectileMesh() const { return ProjectileMesh; }
 	/** Returns ProjectileMovement subobject **/
 	FORCEINLINE UProjectileMovementComponent* GetProjectileMovement() const { return ProjectileMovement; }
-
-private:
-	APawn* PlayerPawn;
 };
 

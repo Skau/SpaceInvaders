@@ -41,6 +41,7 @@ ASpaceInvadersPawn::ASpaceInvadersPawn()
 	bCanFire = true;
 }
 
+// Not currently used (the enemy deals with destroying the player on hit)
 void ASpaceInvadersPawn::OnHit(AActor * SelfActor, AActor * OtherActor, FVector NormalImpulse, const FHitResult & Hit)
 {
 }
@@ -49,8 +50,11 @@ void ASpaceInvadersPawn::SetupPlayerInputComponent(class UInputComponent* Player
 {
 	check(PlayerInputComponent);
 
+	// Used the default template way (the variables are const at the top of this file)
 	PlayerInputComponent->BindAxis(MoveRightBinding);
 	PlayerInputComponent->BindAxis(FireForwardBinding);
+
+	// For the pause menu
 	PlayerInputComponent->BindAction("PauseGame", IE_Released, this, &ASpaceInvadersPawn::PauseGame);
 }
 
@@ -66,6 +70,7 @@ void ASpaceInvadersPawn::Tick(float DeltaSeconds)
 		FHitResult Hit(1.f);
 		RootComponent->MoveComponent(Movement, FRotator(0), true, &Hit);
 		
+		// If a wall is hit, stop the player from moving through it
 		if (Hit.IsValidBlockingHit())
 		{
 			const FVector Normal2D = Hit.Normal.GetSafeNormal2D();

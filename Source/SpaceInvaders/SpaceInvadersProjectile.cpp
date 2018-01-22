@@ -27,7 +27,7 @@ ASpaceInvadersProjectile::ASpaceInvadersProjectile()
 	ProjectileMesh->SetStaticMesh(ProjectileMeshAsset.Object);
 	ProjectileMesh->SetupAttachment(RootComponent);
 	ProjectileMesh->BodyInstance.SetCollisionProfileName("Projectile");
-	ProjectileMesh->OnComponentHit.AddDynamic(this, &ASpaceInvadersProjectile::OnHit);		// set up a notification for when this component hits something
+	ProjectileMesh->OnComponentHit.AddDynamic(this, &ASpaceInvadersProjectile::OnHit);
 	RootComponent = ProjectileMesh;
 
 	// Use a ProjectileMovementComponent to govern this projectile's movement
@@ -37,32 +37,28 @@ ASpaceInvadersProjectile::ASpaceInvadersProjectile()
 	ProjectileMovement->MaxSpeed = 7500.f;
 	ProjectileMovement->bRotationFollowsVelocity = true;
 	ProjectileMovement->bShouldBounce = false;
-	ProjectileMovement->ProjectileGravityScale = 0.f; // No gravity
+	ProjectileMovement->ProjectileGravityScale = 0.f;
 
 	// Die after 3 seconds by default
 	InitialLifeSpan = 3.0f;
 
+	// Sets the scale of the projectile
 	ProjectileMesh->SetRelativeScale3D(FVector(2, 2, 2));
-
-	PlayerPawn = UGameplayStatics::GetPlayerPawn(GetWorld(), 0);
 }
 
 void ASpaceInvadersProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
-	// Only add impulse and destroy projectile if we hit a physics
-	if ((OtherActor != NULL) && (OtherActor != this) && (OtherComp != NULL) && OtherComp->IsSimulatingPhysics())
+	// If the actor hit is an enemy
+	if	(OtherActor->IsA(AEnemy::StaticClass()))
 	{
-		OtherComp->AddImpulseAtLocation(GetVelocity() * 20.0f, GetActorLocation());
+		// Destroy the enemy
+		OtherActor->Destroy();
+		
+		// Cast to the current gamemode and increment the kill counter
+		auto GameMode = (ASpaceInvadersGameMode*)(GetWorld()->GetAuthGameMode());
+		GameMode->SetShipsKilled();
 	}
-	else if	(OtherActor->IsA(AEnemy::StaticClass()))
-	{
-		AActor* Enemy(Cast<AEnemy>(OtherActor));
-		if (Enemy)
-		{
-			Enemy->Destroy();
-			auto GameMode = (ASpaceInvadersGameMode*)(GetWorld()->GetAuthGameMode());
-			GameMode->SetShipsKilled();
-		}
-	}
+
+	// Destroys the projectile
 	Destroy();
 }

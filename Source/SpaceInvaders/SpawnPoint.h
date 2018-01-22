@@ -10,7 +10,7 @@
 class AEnemy;
 
 /**
- * 
+ * Spawns an enemy at the location of the spawn point when the gamemode tells it to
  */
 UCLASS()
 class SPACEINVADERS_API ASpawnPoint : public ATargetPoint

@@ -15,29 +15,31 @@ class ASpaceInvadersPawn : public APawn
 {
 	GENERATED_BODY()
 
-	/* The mesh component */
+	// The mesh component
 	UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UStaticMeshComponent* ShipMeshComponent;
 
 public:
+	// Constructor
 	ASpaceInvadersPawn();
 
+	// For use when colliding with actors
 	UFUNCTION()
 	void OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
 
-	/** Offset from the ships location to spawn projectiles */
+	// Offset from the ships location to spawn projectiles 
 	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite )
 	FVector GunOffset;
 	
-	/* How fast the weapon will fire */
+	// How fast the weapon will fire
 	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
 	float FireRate;
 
-	/* The speed our ship moves around the level */
+	// The speed our ship moves around the level
 	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
 	float MoveSpeed;
 
-	/** Sound to play each time we fire */
+	// Sound to play each time we fire
 	UPROPERTY(Category = Audio, EditAnywhere, BlueprintReadWrite)
 	class USoundBase* FireSound;
 
@@ -46,10 +48,10 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 	// End Actor Interface
 
-	/* Fire a shot in the specified direction */
+	// Fire a shot in the specified direction
 	void FireShot(FVector FireDirection);
 
-	/* Handler for the fire timer expiry */
+	// Handler for the fire timer expiry
 	void ShotTimerExpired();
 
 	// Static names for axis bindings
@@ -58,16 +60,16 @@ public:
 	static const FName FireForwardBinding;
 
 private:
-	/* Flag to control firing  */
+	// Flag to control firing
 	uint32 bCanFire : 1;
 
-	/** Handle for efficient management of ShotTimerExpired timer */
+	// Handle for efficient management of ShotTimerExpired timer
 	FTimerHandle TimerHandle_ShotTimerExpired;
 
 	void PauseGame();
 
 public:
-	/** Returns ShipMeshComponent subobject **/
+	// Returns ShipMeshComponent subobject
 	FORCEINLINE class UStaticMeshComponent* GetShipMeshComponent() const { return ShipMeshComponent; }
 };
 

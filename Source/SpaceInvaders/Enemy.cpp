@@ -33,16 +33,12 @@ AEnemy::AEnemy()
 
 void AEnemy::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {
+	// If the actor hit is the player, destroy it (ends the game, win check in the gamemode)
 	if (OtherActor->IsA(ASpaceInvadersPawn::StaticClass()))
 	{
-		AActor* Player(Cast<ASpaceInvadersPawn>(OtherActor));
-
-		if (Player)
-		{
-			bHitPlayer = true;
-			auto GameMode = (ASpaceInvadersGameMode*)(GetWorld()->GetAuthGameMode());
-			GameMode->bPlayerIsDead = true;
-		}
+		bHitPlayer = true;
+		auto GameMode = (ASpaceInvadersGameMode*)(GetWorld()->GetAuthGameMode());
+		GameMode->bPlayerIsDead = true;
 	}
 }
 
@@ -50,21 +46,22 @@ void AEnemy::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor * Other
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
 	if (!bHitPlayer)
 	{
 		Move(DeltaTime);
 	}
-
+	// if the timer is over
 	if (bCanMoveLeftOrRight)
 	{
+		// Sets the timer to end between 1 and 3 seconds (to make it more random when they move)
 		bCanMoveLeftOrRight = false;
 		MoveLeftOrRightRate = FMath::RandRange(1, 3);
 		GetWorld()->GetTimerManager().SetTimer(MoveLeftOrRightHandle, this, &AEnemy::SetbCanMoveLeftOrRight, MoveLeftOrRightRate);
 		MoveLeftorRight(DeltaTime);
 	}
 }
-
+// Moves down towards the player each frame
 void AEnemy::Move(float DeltaTime)
 {
 	FVector CurrentLocation = GetActorLocation();
@@ -73,7 +70,7 @@ void AEnemy::Move(float DeltaTime)
 
 	SetActorLocation(NewLocation);
 }
-
+// The directon bool is either 1 or 0 (right or left), changes each time so you never know which way they move
 void AEnemy::MoveLeftorRight(float DeltaTime)
 {
 	FVector CurrentLocation = GetActorLocation();
@@ -92,7 +89,7 @@ void AEnemy::MoveLeftorRight(float DeltaTime)
 	}
 	SetActorLocation(NewLocation);
 }
-
+// For the timer handle
 void AEnemy::SetbCanMoveLeftOrRight()
 {
 	bCanMoveLeftOrRight = true;
