@@ -40,7 +40,7 @@ ASpaceInvadersProjectile::ASpaceInvadersProjectile()
 	ProjectileMovement->ProjectileGravityScale = 0.f;
 
 	// Die after 3 seconds by default
-	InitialLifeSpan = 3.0f;
+	InitialLifeSpan = 0.75f;
 
 	// Sets the scale of the projectile
 	ProjectileMesh->SetRelativeScale3D(FVector(2, 2, 2));

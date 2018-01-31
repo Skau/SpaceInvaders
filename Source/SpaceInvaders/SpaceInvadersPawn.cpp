@@ -21,7 +21,7 @@ ASpaceInvadersPawn::ASpaceInvadersPawn()
 	// To enable on hit events
 	OnActorHit.AddDynamic(this, &ASpaceInvadersPawn::OnHit);
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> ShipMesh(TEXT("/Game/Meshes/PlayerMesh.PlayerMesh"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> ShipMesh(TEXT("/Game/Meshes/PlayerShip/PlayerShip.PlayerShip"));
 	// Create the mesh component
 	ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMesh"));
 	RootComponent = ShipMeshComponent;
@@ -36,7 +36,7 @@ ASpaceInvadersPawn::ASpaceInvadersPawn()
 	// Movement
 	MoveSpeed = 1000.0f;
 	// Weapon
-	GunOffset = FVector(90.f, 0.f, 0.f);
+	GunOffset = FVector(180.f, 0.f, 0.f);
 	FireRate = .25f;
 	bCanFire = true;
 }

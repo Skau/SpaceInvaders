@@ -18,7 +18,7 @@ AEnemy::AEnemy()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> ShipMesh(TEXT("/Game/Meshes/EnemyMesh.EnemyMesh"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> ShipMesh(TEXT("/Game/Meshes/AlienShip/Alien.Alien"));
 	// Create the mesh component
 	ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMesh"));
 	RootComponent = ShipMeshComponent;
@@ -39,6 +39,7 @@ void AEnemy::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor * Other
 		bHitPlayer = true;
 		auto GameMode = (ASpaceInvadersGameMode*)(GetWorld()->GetAuthGameMode());
 		GameMode->bPlayerIsDead = true;
+		OtherActor->Destroy();
 	}
 }
 
@@ -70,7 +71,7 @@ void AEnemy::Move(float DeltaTime)
 
 	SetActorLocation(NewLocation);
 }
-// The directon bool is either 1 or 0 (right or left), changes each time so you never know which way they move
+// The directon bool is either 1 or 0 (right or left), changes each time so you never know which way the enemy will move
 void AEnemy::MoveLeftorRight(float DeltaTime)
 {
 	FVector CurrentLocation = GetActorLocation();

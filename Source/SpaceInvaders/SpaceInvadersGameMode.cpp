@@ -56,7 +56,7 @@ void ASpaceInvadersGameMode::Tick(float DeltaSeconds)
 	// For the countdown timer
 	if (!bCanSpawn)
 	{
-		Timer = Timer - DeltaSeconds*1;
+		Timer = Timer - DeltaSeconds * 1;
 	}
 
 	// Updates the current Enemies on  field to the current number
