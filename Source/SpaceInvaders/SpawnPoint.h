@@ -8,7 +8,7 @@
 
 // Forward declarations
 class AEnemy;
-
+class AEnemyBoss;
 /**
  * Spawns an enemy at the location of the spawn point when the gamemode tells it to
  */
@@ -23,5 +23,13 @@ public:
 
 	void SpawnEnemyShip();
 
+	bool GetIfBossSpawnpoint() { return bIsBossSP; }
+
 	TSubclassOf<AEnemy> Enemy_BP;
+	TSubclassOf<AEnemyBoss> EnemyBoss_BP;
+
+	UPROPERTY(EditAnywhere)
+	bool bIsBossSP;
+
+	bool bHaveSpawnedBoss;
 };

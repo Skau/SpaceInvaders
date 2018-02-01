@@ -85,6 +85,13 @@ void ASpaceInvadersPawn::Tick(float DeltaSeconds)
 		// Fire a shot on the x-axis only
 		FireShot(FVector(1, 0, 0));
 	}
+
+	if (Health <= 0)
+	{
+		auto GameMode = (ASpaceInvadersGameMode*)(GetWorld()->GetAuthGameMode());
+		GameMode->bPlayerIsDead = true;
+		Destroy();
+	}
 }
 
 void ASpaceInvadersPawn::FireShot(FVector FireDirection)

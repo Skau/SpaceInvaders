@@ -21,3 +21,4 @@ void USpaceInvadersGameInstance::SetSpawnRate(int NewSpawnRate)
 {
 	SpawnRate = NewSpawnRate;
 }
+

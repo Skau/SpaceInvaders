@@ -59,7 +59,19 @@ public:
 	static const FName MoveRightBinding;
 	static const FName FireForwardBinding;
 
+	// Returns ShipMeshComponent subobject
+	FORCEINLINE class UStaticMeshComponent* GetShipMeshComponent() const { return ShipMeshComponent; }
+
+	UFUNCTION(BlueprintCallable)
+	float GetHealth() { return Health; }
+
+	void DecrementHealth() { Health--; }
+
 private:
+
+	UPROPERTY(VisibleAnywhere)
+	float Health = 100;
+
 	// Flag to control firing
 	uint32 bCanFire : 1;
 
@@ -68,8 +80,5 @@ private:
 
 	void PauseGame();
 
-public:
-	// Returns ShipMeshComponent subobject
-	FORCEINLINE class UStaticMeshComponent* GetShipMeshComponent() const { return ShipMeshComponent; }
 };
 

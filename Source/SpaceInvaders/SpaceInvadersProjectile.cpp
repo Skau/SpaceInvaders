@@ -12,6 +12,7 @@
 #include "SpaceInvadersGameMode.h"
 #include "SpaceInvadersPawn.h"
 #include "Enemy.h"
+#include "EnemyBoss.h"
 
 //{
 //
@@ -39,8 +40,8 @@ ASpaceInvadersProjectile::ASpaceInvadersProjectile()
 	ProjectileMovement->bShouldBounce = false;
 	ProjectileMovement->ProjectileGravityScale = 0.f;
 
-	// Die after 3 seconds by default
-	InitialLifeSpan = 0.75f;
+	// Die after .5 seconds by default so you cannot shoot stuff off-screen
+	InitialLifeSpan = 0.5f;
 
 	// Sets the scale of the projectile
 	ProjectileMesh->SetRelativeScale3D(FVector(2, 2, 2));
@@ -57,6 +58,20 @@ void ASpaceInvadersProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* Other
 		// Cast to the current gamemode and increment the kill counter
 		auto GameMode = (ASpaceInvadersGameMode*)(GetWorld()->GetAuthGameMode());
 		GameMode->SetShipsKilled();
+	}
+	else if (OtherActor->IsA(AEnemyBoss::StaticClass()))
+	{
+		// Destroy the enemy
+		auto Boss = Cast<AEnemyBoss>(OtherActor);
+		Boss->DecrementHealth();
+		Boss->DecrementHealth();
+	}
+	else if (OtherActor->IsA(ASpaceInvadersPawn::StaticClass()))
+	{
+		// Destroy the enemy
+		auto Player = Cast<ASpaceInvadersPawn>(OtherActor);
+		Player->DecrementHealth();
+		Player->DecrementHealth();
 	}
 
 	// Destroys the projectile

@@ -34,16 +34,16 @@ void ASpaceInvadersGameMode::BeginPlay()
 
 	// Gets the current game instance
 	GameInstance = Cast<USpaceInvadersGameInstance>(GetWorld()->GetGameInstance());
-	
+
 	// Finds all spawnpoints
 	int numberOfSpawns = FindAllSpawnPoints();
 
 	// Sets current number of waves
 	TotalWaves = GameInstance->GetTotalWaves();
 
-	// Sets waves left and total enemies to kill for the UI
+	// Sets number of enemies left to spawn (-1 to remove the boss spawner)
 	TotalWavesLeft = TotalWaves;
-	EnemiesLeftToSpawn = numberOfSpawns * TotalWavesLeft;
+	EnemiesLeftToSpawn = numberOfSpawns * TotalWavesLeft - 1;
 
 	// Sets the spawnrate
 	SpawnRate = GameInstance->GetSpawnRate();
@@ -70,9 +70,23 @@ void ASpaceInvadersGameMode::Tick(float DeltaSeconds)
 		bCanSpawn = false;
 		SpawnNewWave();
 		// Resets the timer, removes a wave and starts the timer handle for bCanSpawn
-		Timer = SpawnRate;
-		TotalWavesLeft--;
+		if (TotalWaves >= 1 && !bIsBossWave)
+		{
+			Timer = SpawnRate;
+			TotalWavesLeft--;
+			if (TotalWavesLeft == 0)
+			{
+				bIsBossWave = true;
+				SpawnRate = 11;
+				Timer = SpawnRate;
+			}
+		}
+
 		GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle, this, &ASpaceInvadersGameMode::CanNowSpawnNewShip, SpawnRate);
+	}
+	else if (bCanSpawn && bIsBossWave)
+	{
+		SpawnNewBossWave();
 	}
 }
 
@@ -94,8 +108,22 @@ void ASpaceInvadersGameMode::SpawnNewWave()
 {
 	for (ASpawnPoint* SpawnPoint : SpawnPoints)
 	{
-		SpawnPoint->SpawnEnemyShip();
-		SetEnemiesLeftToSpawn();
+		if (!SpawnPoint->GetIfBossSpawnpoint())
+		{
+			SpawnPoint->SpawnEnemyShip();
+			SetEnemiesLeftToSpawn();
+		}
+	}
+}
+
+void ASpaceInvadersGameMode::SpawnNewBossWave()
+{
+	for (ASpawnPoint* SpawnPoint : SpawnPoints)
+	{
+		if (SpawnPoint->GetIfBossSpawnpoint())
+		{
+			SpawnPoint->SpawnEnemyShip();
+		}
 	}
 }
 
@@ -106,15 +134,20 @@ void ASpaceInvadersGameMode::WinCheck()
 	{
 		bIsGameOver = true;
 		GetWorld()->GetFirstPlayerController()->Pause();
+
+		UE_LOG(LogTemp, Warning, TEXT("Player is dead or enemy hit trigger"))
 	}
 
 	// If there are no enemies left on the field, there are no more waves and no enemies reached the end,
 	// the player wins
-	if ((EnemiesLeftOnField == 0 && TotalWavesLeft == 0) && !bEnemyHitTrigger)
+
+
+	if (EnemiesLeftOnField == 0 && bBossWaveDone && !bEnemyHitTrigger)
 	{
 		bIsGameOver = true;
 		bPlayerWon = true;
 		GetWorld()->GetFirstPlayerController()->Pause();
+		UE_LOG(LogTemp, Warning, TEXT("No more enemies left, boss wave is done and no enemy hit trigger"))
 	}
 }
 
