@@ -6,6 +6,9 @@
 #include "GameFramework/Actor.h"
 #include "EnemyBoss.generated.h"
 
+// Forward declarations
+class ASpaceInvadersProjectile;
+
 UCLASS()
 class SPACEINVADERS_API AEnemyBoss : public AActor
 {
@@ -34,6 +37,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	float GetHealth() { return Health; }
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<ASpaceInvadersProjectile> Projectile_BP;
 
 private:
 	// The mesh component

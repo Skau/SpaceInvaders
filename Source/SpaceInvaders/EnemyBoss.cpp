@@ -100,18 +100,23 @@ void AEnemyBoss::ShootAWave()
 
 void AEnemyBoss::Shoot(int RotationOffset)
 {
-	TArray<FName> SocketLocations = MeshComponent->GetAllSocketNames();
 
-	for (FName& Socket : SocketLocations)
+	if (Projectile_BP != nullptr)
 	{
-		GetWorld()->SpawnActor<ASpaceInvadersProjectile>(
-			MeshComponent->GetSocketLocation(Socket),
-			MeshComponent->GetSocketRotation(Socket) + FRotator(0, RotationOffset, 0)
-			);
-			
-		
-		GetWorld()->GetTimerManager().SetTimer(TH_ShotTimerExpired, this, &AEnemyBoss::ShotTimerExpired, FireRate);
-		bCanFire = false;
+		TArray<FName> SocketLocations = MeshComponent->GetAllSocketNames();
+
+		for (FName& Socket : SocketLocations)
+		{
+			GetWorld()->SpawnActor<ASpaceInvadersProjectile>(
+				Projectile_BP,
+				MeshComponent->GetSocketLocation(Socket),
+				MeshComponent->GetSocketRotation(Socket) + FRotator(0, RotationOffset, 0)
+				);
+
+
+			GetWorld()->GetTimerManager().SetTimer(TH_ShotTimerExpired, this, &AEnemyBoss::ShotTimerExpired, FireRate);
+			bCanFire = false;
+		}
 	}
 }
 

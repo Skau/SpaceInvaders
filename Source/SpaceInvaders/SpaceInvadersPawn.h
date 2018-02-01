@@ -9,6 +9,7 @@
 // Forward Declarations
 class AEnemy;
 class ASpaceInvadersGameMode;
+class ASpaceInvadersProjectile;
 
 UCLASS(Blueprintable)
 class ASpaceInvadersPawn : public APawn
@@ -67,7 +68,11 @@ public:
 
 	void DecrementHealth() { Health--; }
 
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<ASpaceInvadersProjectile> Projectile_BP;
+
 private:
+
 
 	UPROPERTY(VisibleAnywhere)
 	float Health = 100;

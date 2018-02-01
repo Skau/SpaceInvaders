@@ -97,7 +97,7 @@ void ASpaceInvadersPawn::Tick(float DeltaSeconds)
 void ASpaceInvadersPawn::FireShot(FVector FireDirection)
 {
 	// If it's ok to fire again
-	if (bCanFire == true)
+	if (bCanFire == true && Projectile_BP != nullptr)
 	{
 		const FRotator FireRotation = FireDirection.Rotation();
 		// Spawn projectile at an offset from this pawn
@@ -107,7 +107,7 @@ void ASpaceInvadersPawn::FireShot(FVector FireDirection)
 		if (World != NULL)
 		{
 			// spawn the projectile
-			World->SpawnActor<ASpaceInvadersProjectile>(SpawnLocation, FireRotation);
+			World->SpawnActor<ASpaceInvadersProjectile>(Projectile_BP, SpawnLocation, FireRotation);
 		}
 		bCanFire = false;
 		World->GetTimerManager().SetTimer(TimerHandle_ShotTimerExpired, this, &ASpaceInvadersPawn::ShotTimerExpired, FireRate);
