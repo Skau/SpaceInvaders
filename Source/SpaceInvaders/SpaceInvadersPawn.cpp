@@ -60,6 +60,7 @@ void ASpaceInvadersPawn::SetupPlayerInputComponent(class UInputComponent* Player
 
 void ASpaceInvadersPawn::Tick(float DeltaSeconds)
 {
+	// Variables used for calculating movement
 	const float RightValue = GetInputAxisValue(MoveRightBinding);
 	const FVector MoveDirection = FVector(0.f, RightValue, 0.f);
 	const FVector Movement = MoveDirection * MoveSpeed * DeltaSeconds;
@@ -79,10 +80,9 @@ void ASpaceInvadersPawn::Tick(float DeltaSeconds)
 		}
 	}
 	
-	const bool IsFirePressed = GetInputAxisValue(FireForwardBinding);
+	bool IsFirePressed = GetInputAxisValue(FireForwardBinding);
 	if (IsFirePressed)
 	{
-		// Fire a shot on the x-axis only
 		FireShot(FVector(1, 0, 0));
 	}
 
@@ -96,29 +96,20 @@ void ASpaceInvadersPawn::Tick(float DeltaSeconds)
 
 void ASpaceInvadersPawn::FireShot(FVector FireDirection)
 {
-	// If it's ok to fire again
 	if (bCanFire == true && Projectile_BP != nullptr)
 	{
-		const FRotator FireRotation = FireDirection.Rotation();
-		// Spawn projectile at an offset from this pawn
-		const FVector SpawnLocation = GetActorLocation() + FireRotation.RotateVector(GunOffset);
-
-		UWorld* const World = GetWorld();
-		if (World != NULL)
-		{
-			// spawn the projectile
-			World->SpawnActor<ASpaceInvadersProjectile>(Projectile_BP, SpawnLocation, FireRotation);
-		}
+		FRotator FireRotation = FireDirection.Rotation();
+		FVector SpawnLocation = GetActorLocation() + FireRotation.RotateVector(GunOffset);
+	
+		GetWorld()->SpawnActor<ASpaceInvadersProjectile>(Projectile_BP, SpawnLocation, FireRotation);
+		
 		bCanFire = false;
-		World->GetTimerManager().SetTimer(TimerHandle_ShotTimerExpired, this, &ASpaceInvadersPawn::ShotTimerExpired, FireRate);
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle_ShotTimerExpired, this, &ASpaceInvadersPawn::ShotTimerExpired, FireRate);
 
-		// try and play the sound if specified
 		if (FireSound != nullptr)
 		{
-			UGameplayStatics::PlaySoundAtLocation(this, FireSound, GetActorLocation());
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), FireSound, GetActorLocation());
 		}
-
-		bCanFire = false;
 	}
 }
 

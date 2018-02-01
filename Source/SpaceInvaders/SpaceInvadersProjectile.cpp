@@ -37,7 +37,7 @@ ASpaceInvadersProjectile::ASpaceInvadersProjectile()
 	ProjectileMovement->ProjectileGravityScale = 0.f;
 
 	// Die after .5 seconds by default so you cannot shoot stuff off-screen
-	InitialLifeSpan = 0.5f;
+	InitialLifeSpan = .5f;
 
 	// Sets the scale of the projectile
 	ProjectileMesh->SetRelativeScale3D(FVector(2, 2, 2));

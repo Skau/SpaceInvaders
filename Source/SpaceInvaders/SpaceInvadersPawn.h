@@ -56,7 +56,7 @@ public:
 	void ShotTimerExpired();
 
 	// Static names for axis bindings
-	static const FName MoveForwardBinding;
+	static const FName MoveForwardBinding; // not currently used
 	static const FName MoveRightBinding;
 	static const FName FireForwardBinding;
 

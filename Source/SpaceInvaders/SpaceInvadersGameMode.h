@@ -12,6 +12,7 @@ class USpaceInvadersGameInstance;
 class AEnemy;
 class AEnemyBoss;
 class ASpawnPoint;
+class USoundBase;
 
 UCLASS(MinimalAPI)
 class ASpaceInvadersGameMode : public AGameModeBase
@@ -68,6 +69,9 @@ public:
 	AEnemyBoss* getEnemyBoss() { return EnemyBoss; }
 	UFUNCTION(BlueprintCallable)
 	void SetEnemyBoss(AEnemyBoss* Boss) { EnemyBoss = Boss; }
+
+	UPROPERTY(EditAnywhere)
+	USoundBase* Music;
 
 private:
 	//** Functions **//

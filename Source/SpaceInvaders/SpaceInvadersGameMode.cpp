@@ -47,6 +47,11 @@ void ASpaceInvadersGameMode::BeginPlay()
 
 	// Sets the spawnrate
 	SpawnRate = GameInstance->GetSpawnRate();
+
+	if (Music != nullptr)
+	{
+		UGameplayStatics::PlaySound2D(GetWorld(), Music);
+	}
 }
 
 void ASpaceInvadersGameMode::Tick(float DeltaSeconds)
