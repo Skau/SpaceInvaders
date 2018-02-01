@@ -84,6 +84,7 @@ void ASpaceInvadersGameMode::Tick(float DeltaSeconds)
 
 		GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle, this, &ASpaceInvadersGameMode::CanNowSpawnNewShip, SpawnRate);
 	}
+	// if next wave is the boss wave, only spawn the boss
 	else if (bCanSpawn && bIsBossWave)
 	{
 		SpawnNewBossWave();
@@ -103,7 +104,7 @@ int ASpaceInvadersGameMode::FindAllSpawnPoints()
 	return temp;
 }
 
-// Loops through all spawnpoints and spawns an enemy
+// Loops through all spawnpoints and spawns an enemy (excludes the boss)
 void ASpaceInvadersGameMode::SpawnNewWave()
 {
 	for (ASpawnPoint* SpawnPoint : SpawnPoints)
@@ -115,7 +116,7 @@ void ASpaceInvadersGameMode::SpawnNewWave()
 		}
 	}
 }
-
+// Goes through the spawnpoints to spawn the boss (only one spawnpoint has the bool set to true)
 void ASpaceInvadersGameMode::SpawnNewBossWave()
 {
 	for (ASpawnPoint* SpawnPoint : SpawnPoints)
@@ -134,20 +135,16 @@ void ASpaceInvadersGameMode::WinCheck()
 	{
 		bIsGameOver = true;
 		GetWorld()->GetFirstPlayerController()->Pause();
-
-		UE_LOG(LogTemp, Warning, TEXT("Player is dead or enemy hit trigger"))
 	}
 
-	// If there are no enemies left on the field, there are no more waves and no enemies reached the end,
-	// the player wins
-
+	// If there are no enemies left on the field, there are no more waves and no enemies reached the end
+	// and the boss is dead, the player wins
 
 	if (EnemiesLeftOnField == 0 && bBossWaveDone && !bEnemyHitTrigger)
 	{
 		bIsGameOver = true;
 		bPlayerWon = true;
 		GetWorld()->GetFirstPlayerController()->Pause();
-		UE_LOG(LogTemp, Warning, TEXT("No more enemies left, boss wave is done and no enemy hit trigger"))
 	}
 }
 
@@ -163,6 +160,8 @@ void ASpaceInvadersGameMode::SetEnemiesLeftOnField()
 
 	EnemiesLeftOnField = temp;
 }
+
+/* Only getters and setters used throughout the game below */
 
 int ASpaceInvadersGameMode::GetWavesLeft()
 {

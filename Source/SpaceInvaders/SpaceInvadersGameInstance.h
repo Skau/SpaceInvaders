@@ -14,6 +14,8 @@ class SPACEINVADERS_API USpaceInvadersGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 
+
+	// Used for the settings menu
 public:
 	UFUNCTION(BlueprintCallable)
 	int GetTotalWaves();

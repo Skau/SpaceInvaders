@@ -24,27 +24,32 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	// Main function to control the shooting
 	void ShootAWave();
 
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-	/* The speed the ship */
+	
 	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
 	float MoveSpeed = 25.f;
 
+	// Used everytime the ship is hit
 	void DecrementHealth() { Health--; }
 
+	// Used by the UI
 	UFUNCTION(BlueprintCallable)
 	float GetHealth() { return Health; }
 
+	// For spawning the correct projectile
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ASpaceInvadersProjectile> Projectile_BP;
 
 private:
-	// The mesh component
 	UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	class UStaticMeshComponent* MeshComponent;
+
+	UPROPERTY(VisibleAnywhere)
+	float Health = 100;
 
 	void Shoot(int RotationOffset);
 
@@ -58,6 +63,8 @@ private:
 
 	bool bCanFire;
 
+	bool bHitPlayer = false;
+
 	void TempTimerExpired();
 
 	void ShotTimerExpired();
@@ -65,12 +72,8 @@ private:
 	float TempRate;
 
 	float FireRate;
+
 	FTimerHandle TempHandler;
 
 	FTimerHandle TH_ShotTimerExpired;
-
-	UPROPERTY(VisibleAnywhere)
-	float Health = 100;
-
-	bool bHitPlayer = false;
 };

@@ -63,17 +63,18 @@ public:
 	// Returns ShipMeshComponent subobject
 	FORCEINLINE class UStaticMeshComponent* GetShipMeshComponent() const { return ShipMeshComponent; }
 
+	// Returns the health for the UI
 	UFUNCTION(BlueprintCallable)
 	float GetHealth() { return Health; }
 
+	// When the projectile hits, decrement health
 	void DecrementHealth() { Health--; }
 
+	// Used to spawn the correct projectile
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ASpaceInvadersProjectile> Projectile_BP;
 
 private:
-
-
 	UPROPERTY(VisibleAnywhere)
 	float Health = 100;
 
@@ -83,6 +84,7 @@ private:
 	// Handle for efficient management of ShotTimerExpired timer
 	FTimerHandle TimerHandle_ShotTimerExpired;
 
+	// Pauses the game
 	void PauseGame();
 
 };

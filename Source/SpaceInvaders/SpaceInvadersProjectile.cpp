@@ -9,15 +9,10 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Actor.h"
 #include "Engine/World.h"
-#include "Sound/SoundBase.h"
 #include "SpaceInvadersGameMode.h"
 #include "SpaceInvadersPawn.h"
 #include "Enemy.h"
 #include "EnemyBoss.h"
-
-//{
-//
-//}
 
 ASpaceInvadersProjectile::ASpaceInvadersProjectile()
 {

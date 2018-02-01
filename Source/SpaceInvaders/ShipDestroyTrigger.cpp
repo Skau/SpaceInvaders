@@ -32,7 +32,7 @@ void AShipDestroyTrigger::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
-
+// Destroys the enemy if it reaches it, and ends the game
 void AShipDestroyTrigger::OnBeginOverlap(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
 {
 	if (OtherActor->IsA(AEnemy::StaticClass()))
