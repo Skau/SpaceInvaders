@@ -9,6 +9,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Actor.h"
 #include "Engine/World.h"
+#include "Sound/SoundBase.h"
 #include "SpaceInvadersGameMode.h"
 #include "SpaceInvadersPawn.h"
 #include "Enemy.h"
@@ -55,6 +56,16 @@ void ASpaceInvadersProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* Other
 		// Destroy the enemy
 		OtherActor->Destroy();
 		
+		if (ExplosionSound != nullptr)
+		{
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), ExplosionSound, GetActorLocation(), 0.6f);
+		}
+
+		if (ExplosionEffect != nullptr)
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionEffect, OtherActor->GetActorLocation(), GetActorRotation(), FVector(2));
+		}
+
 		// Cast to the current gamemode and increment the kill counter
 		auto GameMode = (ASpaceInvadersGameMode*)(GetWorld()->GetAuthGameMode());
 		GameMode->SetShipsKilled();
@@ -65,6 +76,17 @@ void ASpaceInvadersProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* Other
 		auto Boss = Cast<AEnemyBoss>(OtherActor);
 		Boss->DecrementHealth();
 		Boss->DecrementHealth();
+
+
+		if (ExplosionSound != nullptr)
+		{
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), ExplosionSound, GetActorLocation(), 0.6f);
+		}
+
+		if (ExplosionEffect != nullptr)
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionEffect, GetActorLocation(), GetActorRotation(), FVector(2));
+		}
 	}
 	else if (OtherActor->IsA(ASpaceInvadersPawn::StaticClass()))
 	{
@@ -72,6 +94,14 @@ void ASpaceInvadersProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* Other
 		auto Player = Cast<ASpaceInvadersPawn>(OtherActor);
 		Player->DecrementHealth();
 		Player->DecrementHealth();
+		if (ExplosionSound != nullptr)
+		{
+			UGameplayStatics::PlaySoundAtLocation(GetWorld(), ExplosionSound, GetActorLocation(), 0.2f);
+		}
+		if (ExplosionEffect != nullptr)
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ExplosionEffect, OtherActor->GetActorLocation(), GetActorRotation(), FVector(0.75));
+		}
 	}
 
 	// Destroys the projectile

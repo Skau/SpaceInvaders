@@ -11,13 +11,13 @@
 
 ASpawnPoint::ASpawnPoint()
 {
-	static ConstructorHelpers::FObjectFinder<UBlueprint> EnemyBP(TEXT("Blueprint'/Game/Blueprints/Enemy_BP.Enemy_BP'"));
+	static ConstructorHelpers::FObjectFinder<UBlueprint> EnemyBP(TEXT("Class'/Game/Blueprints/Enemy_BP.Enemy_BP'"));
 	if (EnemyBP.Object)
 	{
 		Enemy_BP = (UClass*)EnemyBP.Object->GeneratedClass;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UBlueprint> EnemyBossBP(TEXT("Blueprint'/Game/Blueprints/EnemyBoss_BP.EnemyBoss_BP'"));
+	static ConstructorHelpers::FObjectFinder<UBlueprint> EnemyBossBP(TEXT("Class'/Game/Blueprints/EnemyBoss_BP.EnemyBoss_BP'"));
 	if (EnemyBossBP.Object)
 	{
 		EnemyBoss_BP = (UClass*)EnemyBossBP.Object->GeneratedClass;
