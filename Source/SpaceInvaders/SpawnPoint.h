@@ -26,7 +26,10 @@ public:
 	// Used to see if this is the boss spawnpoint
 	bool GetIfBossSpawnpoint() { return bIsBossSP; }
 
+	UPROPERTY(EditAnywhere)
 	TSubclassOf<AEnemy> Enemy_BP;
+
+	UPROPERTY(EditAnywhere)
 	TSubclassOf<AEnemyBoss> EnemyBoss_BP;
 
 	// If this is checked in details, nothing will spawn unless it's the boss wave (only one spawnpoint has this checked)
