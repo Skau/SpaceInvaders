@@ -102,10 +102,11 @@ void ASpaceInvadersPawn::FireShot(FVector FireDirection)
 		FVector SpawnLocation = GetActorLocation() + FireRotation.RotateVector(GunOffset);
 	
 		GetWorld()->SpawnActor<ASpaceInvadersProjectile>(Projectile_BP, SpawnLocation, FireRotation);
-		
-		bCanFire = false;
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle_ShotTimerExpired, this, &ASpaceInvadersPawn::ShotTimerExpired, FireRate);
 
+		bCanFire = false;
+
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle_ShotTimerExpired, this, &ASpaceInvadersPawn::ShotTimerExpired, FireRate);
+		
 		if (FireSound != nullptr)
 		{
 			UGameplayStatics::PlaySoundAtLocation(GetWorld(), FireSound, GetActorLocation());
