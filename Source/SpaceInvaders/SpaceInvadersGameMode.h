@@ -6,7 +6,6 @@
 #include "GameFramework/GameModeBase.h"
 #include "SpaceInvadersGameMode.generated.h"
 
-
 // Forward declarations
 class USpaceInvadersGameInstance;
 class AEnemy;
@@ -21,32 +20,59 @@ class ASpaceInvadersGameMode : public AGameModeBase
 	GENERATED_BODY()
 
 public:
-	// Getters for local variables used by the UI widget during game
+	// Getters for variables used by the UI widget during game
 	UFUNCTION(BlueprintCallable)
-	int GetWavesLeft();
+	int GetWavesLeft() { return TotalWavesLeft; }
+
 	UFUNCTION(BlueprintCallable)
-	int GetEnemiesLeftToSpawn();
+	int GetEnemiesLeftToSpawn() { return EnemiesLeftToSpawn; }
+
 	UFUNCTION(BlueprintCallable)
-	int GetShipsKilled();
+	int GetShipsKilled() { return EnemyShipsKilled; }
+
 	UFUNCTION(BlueprintCallable)
-	int GetEnemiesLeftOnField();
+	int GetEnemiesLeftOnField() { return EnemiesLeftOnField; }
+
 	UFUNCTION(BlueprintCallable)
-	int GetTimerToSpawn();
+	int GetTimerToSpawn() { return FMath::RoundToZero(Timer); }
+
 	UFUNCTION(BlueprintCallable)
 	int GetBossKills() { return BossKills; }
-	UFUNCTION(BlueprintCallable)
-	bool CheckIfGameIsOver();
-	UFUNCTION(BlueprintCallable)
-	bool GetPlayerWon();
-	UFUNCTION(BlueprintCallable)
-	bool CheckIfGameIsPaused();
 
-	// Used to increment the kill counter by the projectile
-	void SetShipsKilled();
+	UFUNCTION(BlueprintCallable)
+	bool CheckIfGameIsOver() { return bIsGameOver; }
+
+	UFUNCTION(BlueprintCallable)
+	bool GetPlayerWon() { return bPlayerWon; }
+
+	UFUNCTION(BlueprintCallable)
+	bool CheckIfGameIsPaused() { return bGameIsPaused; }
+
+	UFUNCTION(BlueprintCallable)
+	bool GetBossHasSpawned() { return bBossHasSpawned; }
+
+	UFUNCTION(BlueprintCallable)
+	bool GetIfBossWave() { return bIsBossWave; }
+
+	UFUNCTION(BlueprintCallable)
+	AEnemyBoss* getEnemyBoss() { return EnemyBoss; }
+
+	// The boss sets this when it spawns
+	UFUNCTION(BlueprintCallable)
+	void SetEnemyBoss(AEnemyBoss* Boss) { EnemyBoss = Boss; }
+
+	UFUNCTION(BlueprintCallable)
+	UAudioComponent* GetCurrentMusic() { return CurrentMusic; }
 
 	// Variables used for the wincheck, set from Player Pawn and Enemy Actor respectively
 	bool bPlayerIsDead;
 	bool bEnemyHitTrigger;
+
+	// Used to increment the kill counter by the projectile
+	void SetShipsKilled() { EnemyShipsKilled++; }
+
+	// Used by the player, boss and projectile to see if allowed to play sounds
+	bool GetbIsSoundEffectsAllowed() { return bIsSoundEffectsAllowed; }
 
 	// Used by the UI to resume the game
 	UFUNCTION(BlueprintCallable)
@@ -55,35 +81,17 @@ public:
 	// Used by the player controller (action binding) to pause the game
 	void SetGameIsPaused();
 
-	// Used by the UI to know when to create the boss health bar
-	UFUNCTION(BlueprintCallable)
-	bool GetBossHasSpawned() { return bBossHasSpawned; }
-
 	// Used by the Boss to tell when he has spawned
 	UFUNCTION(BlueprintCallable)
-	void SetBossHasSpawned() { 
-		bBossHasSpawned = true;
-		bBossIsDead = false;
-	}
-
+	void SetBossHasSpawned();
+	
 	// Boss sets this when it dies
 	UFUNCTION(BlueprintCallable)
 	void SetBossIsDead();
 
-	// Used by the UI to be able to get the health of the boss
-	UFUNCTION(BlueprintCallable)
-	AEnemyBoss* getEnemyBoss() { return EnemyBoss; }
-	UFUNCTION(BlueprintCallable)
-	void SetEnemyBoss(AEnemyBoss* Boss) { EnemyBoss = Boss; }
-
-	UFUNCTION(BlueprintCallable)
-	UAudioComponent* GetCurrentMusic() { return CurrentMusic; }
-
+	// Used to set the background music
 	UPROPERTY(EditAnywhere)
 	USoundBase* Music;
-
-	// Used by the player, boss and projectile to see if allowed to play sounds
-	bool GetbIsSoundEffectsAllowed() { return bIsSoundEffectsAllowed; }
 
 protected:
 	// Sets the basic variables used every game
@@ -99,7 +107,7 @@ protected:
 	int FindAllSpawnPoints();
 
 	// Used by the timerhandle to set spawnrate
-	void CanNowSpawnNewShip();
+	void CanNowSpawnNewShip() { bCanSpawn = true; }
 
 	// Iterates through spawnpoints and calls the spawn ship function
 	void SpawnNewWave();
@@ -111,10 +119,10 @@ protected:
 	void SetEnemiesLeftOnField();
 
 	// Returns if the player is dead
-	bool bIsPlayerDead();
+	bool bIsPlayerDead() { return bPlayerIsDead; }
 
 	// Decrements one enemy from the total number left to spawn
-	void SetEnemiesLeftToSpawn();
+	void SetEnemiesLeftToSpawn() { EnemiesLeftToSpawn--; }
 
 	// Checks for when the game is over
 	void WinCheck();

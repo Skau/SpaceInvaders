@@ -196,62 +196,16 @@ void ASpaceInvadersGameMode::SetEnemiesLeftOnField()
 	EnemiesLeftOnField = temp;
 }
 
-/* Only getters and setters used throughout the game below */
-
-int ASpaceInvadersGameMode::GetWavesLeft()
-{
-	return TotalWavesLeft;
-}
-
-int ASpaceInvadersGameMode::GetEnemiesLeftToSpawn()
-{
-	return EnemiesLeftToSpawn;
-}
-
-int ASpaceInvadersGameMode::GetShipsKilled()
-{
-	return EnemyShipsKilled;
-}
-
-int ASpaceInvadersGameMode::GetEnemiesLeftOnField()
-{
-	return EnemiesLeftOnField;
-}
-
-int ASpaceInvadersGameMode::GetTimerToSpawn()
-{
-	return FMath::RoundToZero(Timer);
-}
-
-bool ASpaceInvadersGameMode::CheckIfGameIsOver()
-{
-	return bIsGameOver;
-}
-
-bool ASpaceInvadersGameMode::bIsPlayerDead()
-{
-	return bPlayerIsDead;
-}
-
-bool ASpaceInvadersGameMode::GetPlayerWon()
-{
-	return bPlayerWon;
-}
-
-bool ASpaceInvadersGameMode::CheckIfGameIsPaused()
-{
-	return bGameIsPaused;
-}
-
-void ASpaceInvadersGameMode::SetShipsKilled()
-{
-	EnemyShipsKilled++;
-}
-
 void ASpaceInvadersGameMode::SetGameIsPaused()
 {
 	GetWorld()->GetFirstPlayerController()->SetPause(true);
 	bGameIsPaused = true;
+}
+
+void ASpaceInvadersGameMode::SetGameIsNotPaused()
+{
+	GetWorld()->GetFirstPlayerController()->SetPause(false);
+	bGameIsPaused = false;
 }
 
 void ASpaceInvadersGameMode::SetBossIsDead()
@@ -262,18 +216,11 @@ void ASpaceInvadersGameMode::SetBossIsDead()
 	BossKills++;
 }
 
-void ASpaceInvadersGameMode::SetGameIsNotPaused()
+void ASpaceInvadersGameMode::SetBossHasSpawned()
 {
-	GetWorld()->GetFirstPlayerController()->SetPause(false);
-	bGameIsPaused = false;
+	bBossHasSpawned = true;
+	bBossIsDead = false;
 }
 
-void ASpaceInvadersGameMode::SetEnemiesLeftToSpawn()
-{
-	EnemiesLeftToSpawn--;
-}
 
-void ASpaceInvadersGameMode::CanNowSpawnNewShip()
-{
-	bCanSpawn = true;
-}
+
