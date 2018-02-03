@@ -13,6 +13,7 @@ class AEnemy;
 class AEnemyBoss;
 class ASpawnPoint;
 class USoundBase;
+class UAudioComponent;
 
 UCLASS(MinimalAPI)
 class ASpaceInvadersGameMode : public AGameModeBase
@@ -73,11 +74,13 @@ public:
 	UPROPERTY(EditAnywhere)
 	USoundBase* Music;
 
+	UAudioComponent* CurrentMusic;
+
 private:
 	//** Functions **//
 
 	// Sets the basic variables used every game
-	ASpaceInvadersGameMode();
+	ASpaceInvadersGameMode(const FObjectInitializer& ObjectInitializer);
 
 	// Sets a few variables that cannot be set in the constructor
 	virtual void BeginPlay() override;
@@ -129,6 +132,8 @@ private:
 
 	int EnemiesLeftOnField;
 
+	bool bIsCurrentlyPlayingMusic;
+	
 	bool bIsBossWave;
 
 	bool bBossHasSpawned;

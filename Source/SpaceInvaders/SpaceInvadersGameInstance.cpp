@@ -22,3 +22,13 @@ void USpaceInvadersGameInstance::SetSpawnRate(int NewSpawnRate)
 	SpawnRate = NewSpawnRate;
 }
 
+bool USpaceInvadersGameInstance::GetMusicAllowed()
+{
+	return bIsMusicAllowed;
+}
+
+void USpaceInvadersGameInstance::SetMusicAllowed(bool value)
+{
+	bIsMusicAllowed = value;
+}
+

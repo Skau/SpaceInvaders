@@ -29,7 +29,16 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetSpawnRate(int NewSpawnRate);
 
+	UFUNCTION(BlueprintCallable)
+	bool GetMusicAllowed();
+
+	UFUNCTION(BlueprintCallable)
+	void SetMusicAllowed(bool value);
+
 private:
+
+	bool bIsMusicAllowed = true;
+
 	int TotalWaves = 10;
 
 	int SpawnRate = 3;

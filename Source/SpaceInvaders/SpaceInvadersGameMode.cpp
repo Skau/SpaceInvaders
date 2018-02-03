@@ -5,6 +5,7 @@
 #include "Public/EngineUtils.h"
 #include "Kismet/GameplayStatics.h"
 #include "Math/UnrealMathUtility.h"
+#include "Components/AudioComponent.h"
 #include "Engine/World.h"
 #include "TimerManager.h"
 #include "SpaceInvadersGameInstance.h"
@@ -12,9 +13,10 @@
 #include "SpawnPoint.h"
 
 // Init default variables on construction (variables that cannot be changed through in-game settings)
-ASpaceInvadersGameMode::ASpaceInvadersGameMode()
+ASpaceInvadersGameMode::ASpaceInvadersGameMode(const FObjectInitializer& ObjectInitializer)
 {
 	DefaultPawnClass = ASpaceInvadersPawn::StaticClass();
+	CurrentMusic = ObjectInitializer.CreateDefaultSubobject<UAudioComponent>(this, TEXT("AudioTest"));
 	PrimaryActorTick.bCanEverTick = true;
 	bCanSpawn = true;
 	bPlayerHitByEnemy = false;
@@ -48,15 +50,29 @@ void ASpaceInvadersGameMode::BeginPlay()
 	// Sets the spawnrate
 	SpawnRate = GameInstance->GetSpawnRate();
 
-	if (Music != nullptr)
+	if (Music != nullptr && GameInstance->GetMusicAllowed())
 	{
-		UGameplayStatics::PlaySound2D(GetWorld(), Music);
+		CurrentMusic->SetSound(Music);
+		CurrentMusic->Play();
+		bIsCurrentlyPlayingMusic = true;
 	}
 }
 
 void ASpaceInvadersGameMode::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+
+	if (!GameInstance->GetMusicAllowed() && bIsCurrentlyPlayingMusic)
+	{
+		CurrentMusic->Stop();
+		bIsCurrentlyPlayingMusic = false;
+	}
+
+	if (!GameInstance->GetMusicAllowed() && !bIsCurrentlyPlayingMusic)
+	{
+		CurrentMusic->Play();
+		bIsCurrentlyPlayingMusic = true;
+	}
 
 	// For the countdown timer
 	if (!bCanSpawn)

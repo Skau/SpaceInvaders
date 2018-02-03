@@ -10,6 +10,7 @@ ASpawnPoint::ASpawnPoint()
 {
 }
 
+
 // Spawns the correct enemy
 void ASpawnPoint::SpawnEnemyShip()
 {

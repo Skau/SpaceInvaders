@@ -72,7 +72,6 @@ void ASpaceInvadersProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* Other
 		Boss->DecrementHealth();
 		Boss->DecrementHealth();
 
-
 		if (ExplosionSound != nullptr)
 		{
 			UGameplayStatics::PlaySoundAtLocation(GetWorld(), ExplosionSound, GetActorLocation(), 0.6f);
