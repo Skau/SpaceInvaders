@@ -13,6 +13,7 @@ class AEnemy;
 class SpaceInvadersPawn;
 class USoundBase;
 class UParticleSystem;
+class ASpaceInvadersGameMode;
 
 UCLASS(config=Game)
 class ASpaceInvadersProjectile : public AActor
@@ -45,5 +46,7 @@ private:
 	// Projectile movement component
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	UProjectileMovementComponent* ProjectileMovement;
+
+	ASpaceInvadersGameMode* GameMode;
 };
 

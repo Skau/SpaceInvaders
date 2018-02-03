@@ -18,29 +18,33 @@ class SPACEINVADERS_API USpaceInvadersGameInstance : public UGameInstance
 	// Used for the settings menu
 public:
 	UFUNCTION(BlueprintCallable)
-	int GetTotalWaves();
+	int GetTotalWaves() { return TotalWaves; }
 
 	UFUNCTION(BlueprintCallable)
-	void SetTotalWaves(int NewTotalWaves);
+	void SetTotalWaves(int NewTotalWaves) { TotalWaves = NewTotalWaves; }
 
 	UFUNCTION(BlueprintCallable)
-	int GetSpawnRate();
+	int GetSpawnRate() { return SpawnRate; }
 
 	UFUNCTION(BlueprintCallable)
-	void SetSpawnRate(int NewSpawnRate);
+	void SetSpawnRate(int NewSpawnRate) { SpawnRate = NewSpawnRate; }
 
 	UFUNCTION(BlueprintCallable)
-	bool GetMusicAllowed();
+	bool GetMusicAllowed() { return bIsMusicAllowed; }
 
 	UFUNCTION(BlueprintCallable)
-	void SetMusicAllowed(bool value);
+	void SetMusicAllowed(bool value) { bIsMusicAllowed = value; }
+
+	UFUNCTION(BlueprintCallable)
+	bool GetSoundEffectsAllowed() { return bIsSoundEffectsAllowed; }
+
+	UFUNCTION(BlueprintCallable)
+	void SetSoundEffectsAllowed(bool value) { bIsSoundEffectsAllowed = value; }
 
 private:
-
 	bool bIsMusicAllowed = true;
-
+	bool bIsSoundEffectsAllowed = true;
 	int TotalWaves = 10;
-
 	int SpawnRate = 3;
 
 	

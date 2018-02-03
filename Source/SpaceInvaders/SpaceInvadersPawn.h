@@ -87,5 +87,7 @@ private:
 	// Pauses the game
 	void PauseGame();
 
+	ASpaceInvadersGameMode* GameMode;
+
 };
 

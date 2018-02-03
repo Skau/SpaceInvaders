@@ -16,7 +16,8 @@
 ASpaceInvadersGameMode::ASpaceInvadersGameMode(const FObjectInitializer& ObjectInitializer)
 {
 	DefaultPawnClass = ASpaceInvadersPawn::StaticClass();
-	CurrentMusic = ObjectInitializer.CreateDefaultSubobject<UAudioComponent>(this, TEXT("AudioTest"));
+	CurrentMusic = ObjectInitializer.CreateDefaultSubobject<UAudioComponent>(this, TEXT("BackgroundMusic"));
+	RootComponent = CurrentMusic;
 	PrimaryActorTick.bCanEverTick = true;
 	bCanSpawn = true;
 	bBossHasSpawned = false;
@@ -50,11 +51,22 @@ void ASpaceInvadersGameMode::BeginPlay()
 	// Sets the spawnrate
 	SpawnRate = GameInstance->GetSpawnRate();
 
-	if (Music != nullptr && GameInstance->GetMusicAllowed())
+	if (Music != nullptr)
 	{
 		CurrentMusic->SetSound(Music);
-		CurrentMusic->Play();
-		bIsCurrentlyPlayingMusic = true;
+		CurrentMusic->bIsUISound = true;
+
+		if (GameInstance->GetMusicAllowed())
+		{
+			CurrentMusic->Play();
+			bIsCurrentlyPlayingMusic = true;
+		}
+
+		if (!GameInstance->GetMusicAllowed())
+		{
+			CurrentMusic->Stop();
+			bIsCurrentlyPlayingMusic = false;
+		}
 	}
 }
 
@@ -62,16 +74,29 @@ void ASpaceInvadersGameMode::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if (!GameInstance->GetMusicAllowed() && bIsCurrentlyPlayingMusic)
+	if (Music != nullptr)
 	{
-		CurrentMusic->Stop();
-		bIsCurrentlyPlayingMusic = false;
+		if (!GameInstance->GetMusicAllowed() && bIsCurrentlyPlayingMusic)
+		{
+			CurrentMusic->Stop();
+			bIsCurrentlyPlayingMusic = false;
+		}
+
+		if (!GameInstance->GetMusicAllowed() && !bIsCurrentlyPlayingMusic)
+		{
+			CurrentMusic->Play();
+			bIsCurrentlyPlayingMusic = true;
+		}
 	}
 
-	if (!GameInstance->GetMusicAllowed() && !bIsCurrentlyPlayingMusic)
+	if (!GameInstance->GetSoundEffectsAllowed() && bIsSoundEffectsAllowed)
 	{
-		CurrentMusic->Play();
-		bIsCurrentlyPlayingMusic = true;
+		bIsSoundEffectsAllowed = false;
+	}
+
+	if (GameInstance->GetSoundEffectsAllowed() && !bIsSoundEffectsAllowed)
+	{
+		bIsSoundEffectsAllowed = true;
 	}
 
 	// For the countdown timer

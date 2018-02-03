@@ -76,10 +76,14 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetEnemyBoss(AEnemyBoss* Boss) { EnemyBoss = Boss; }
 
+	UFUNCTION(BlueprintCallable)
+	UAudioComponent* GetCurrentMusic() { return CurrentMusic; }
+
 	UPROPERTY(EditAnywhere)
 	USoundBase* Music;
 
-	UAudioComponent* CurrentMusic;
+	// Used by the player, boss and projectile to see if allowed to play sounds
+	bool GetbIsSoundEffectsAllowed() { return bIsSoundEffectsAllowed; }
 
 protected:
 	// Sets the basic variables used every game
@@ -117,6 +121,8 @@ protected:
 
 	//** Variables **//
 
+	UAudioComponent* CurrentMusic;
+
 	AEnemyBoss* EnemyBoss;
 
 	USpaceInvadersGameInstance* GameInstance;
@@ -136,6 +142,10 @@ protected:
 	int EnemiesLeftOnField;
 
 	int BossKills;
+
+	bool bIsMusicAllowed;
+
+	bool bIsSoundEffectsAllowed;
 
 	bool bIsClassic;
 

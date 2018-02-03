@@ -60,6 +60,8 @@ void ASpaceInvadersPawn::SetupPlayerInputComponent(class UInputComponent* Player
 
 void ASpaceInvadersPawn::Tick(float DeltaSeconds)
 {
+	GameMode = (ASpaceInvadersGameMode*)(GetWorld()->GetAuthGameMode());
+
 	// Variables used for calculating movement
 	const float RightValue = GetInputAxisValue(MoveRightBinding);
 	const FVector MoveDirection = FVector(0.f, RightValue, 0.f);
@@ -88,7 +90,6 @@ void ASpaceInvadersPawn::Tick(float DeltaSeconds)
 
 	if (Health <= 0)
 	{
-		auto GameMode = (ASpaceInvadersGameMode*)(GetWorld()->GetAuthGameMode());
 		GameMode->bPlayerIsDead = true;
 		Destroy();
 	}
@@ -107,7 +108,7 @@ void ASpaceInvadersPawn::FireShot(FVector FireDirection)
 
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle_ShotTimerExpired, this, &ASpaceInvadersPawn::ShotTimerExpired, FireRate);
 		
-		if (FireSound != nullptr)
+		if (FireSound != nullptr && GameMode->GetbIsSoundEffectsAllowed())
 		{
 			UGameplayStatics::PlaySoundAtLocation(GetWorld(), FireSound, GetActorLocation());
 		}

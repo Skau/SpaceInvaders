@@ -45,13 +45,15 @@ ASpaceInvadersProjectile::ASpaceInvadersProjectile()
 
 void ASpaceInvadersProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
+	GameMode = (ASpaceInvadersGameMode*)(GetWorld()->GetAuthGameMode());
+
 	// If the actor hit is an enemy
 	if	(OtherActor->IsA(AEnemy::StaticClass()))
 	{
 		// Destroy the enemy
 		OtherActor->Destroy();
 		
-		if (ExplosionSound != nullptr)
+		if (ExplosionSound != nullptr && GameMode->GetbIsSoundEffectsAllowed())
 		{
 			UGameplayStatics::PlaySoundAtLocation(GetWorld(), ExplosionSound, GetActorLocation(), 0.6f);
 		}
@@ -62,7 +64,6 @@ void ASpaceInvadersProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* Other
 		}
 
 		// Cast to the current gamemode and increment the kill counter
-		auto GameMode = (ASpaceInvadersGameMode*)(GetWorld()->GetAuthGameMode());
 		GameMode->SetShipsKilled();
 	}
 	else if (OtherActor->IsA(AEnemyBoss::StaticClass()))
@@ -72,7 +73,7 @@ void ASpaceInvadersProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* Other
 		Boss->DecrementHealth();
 		Boss->DecrementHealth();
 
-		if (ExplosionSound != nullptr)
+		if (ExplosionSound != nullptr && GameMode->GetbIsSoundEffectsAllowed())
 		{
 			UGameplayStatics::PlaySoundAtLocation(GetWorld(), ExplosionSound, GetActorLocation(), 0.6f);
 		}
@@ -88,7 +89,7 @@ void ASpaceInvadersProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* Other
 		auto Player = Cast<ASpaceInvadersPawn>(OtherActor);
 		Player->DecrementHealth();
 		Player->DecrementHealth();
-		if (ExplosionSound != nullptr)
+		if (ExplosionSound != nullptr && GameMode->GetbIsSoundEffectsAllowed())
 		{
 			UGameplayStatics::PlaySoundAtLocation(GetWorld(), ExplosionSound, GetActorLocation(), 0.2f);
 		}
