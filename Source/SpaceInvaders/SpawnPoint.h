@@ -26,6 +26,8 @@ public:
 	// Used to see if this is the boss spawnpoint
 	bool GetIfBossSpawnpoint() { return bIsBossSP; }
 
+	void SetHaveSpawnedBoss(bool Value) { bHaveSpawnedBoss = Value; }
+
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AEnemy> Enemy_BP;
 

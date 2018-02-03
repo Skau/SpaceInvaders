@@ -19,6 +19,7 @@ ASpaceInvadersGameMode::ASpaceInvadersGameMode(const FObjectInitializer& ObjectI
 	CurrentMusic = ObjectInitializer.CreateDefaultSubobject<UAudioComponent>(this, TEXT("AudioTest"));
 	PrimaryActorTick.bCanEverTick = true;
 	bCanSpawn = true;
+	bBossHasSpawned = false;
 	bPlayerHitByEnemy = false;
 	bPlayerIsDead = false;
 	bIsGameOver = false;
@@ -27,6 +28,7 @@ ASpaceInvadersGameMode::ASpaceInvadersGameMode(const FObjectInitializer& ObjectI
 	bEnemyHitTrigger = false;
 	EnemiesLeftOnField = 0;
 	EnemyShipsKilled = 0;
+	BossKills = 0;
 }
 
 // Init the game variables that has to be set at runtime
@@ -40,11 +42,9 @@ void ASpaceInvadersGameMode::BeginPlay()
 	// Finds all spawnpoints
 	int numberOfSpawns = FindAllSpawnPoints();
 
-	// Sets current number of waves
-	TotalWaves = GameInstance->GetTotalWaves();
+	TotalWavesLeft = TotalWaves;
 
 	// Sets number of enemies left to spawn (-1 to remove the boss spawner)
-	TotalWavesLeft = TotalWaves;
 	EnemiesLeftToSpawn = numberOfSpawns * TotalWavesLeft - 1;
 
 	// Sets the spawnrate
@@ -83,33 +83,6 @@ void ASpaceInvadersGameMode::Tick(float DeltaSeconds)
 	// Updates the current Enemies on  field to the current number
 	SetEnemiesLeftOnField();
 
-	WinCheck();
-
-	// Spawns a new wave if conditions allow
-	if (bCanSpawn && TotalWavesLeft != 0)
-	{
-		bCanSpawn = false;
-		SpawnNewWave();
-		// Resets the timer, removes a wave and starts the timer handle for bCanSpawn
-		if (TotalWaves >= 1 && !bIsBossWave)
-		{
-			Timer = SpawnRate;
-			TotalWavesLeft--;
-			if (TotalWavesLeft == 0)
-			{
-				bIsBossWave = true;
-				SpawnRate = 11;
-				Timer = SpawnRate;
-			}
-		}
-
-		GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle, this, &ASpaceInvadersGameMode::CanNowSpawnNewShip, SpawnRate);
-	}
-	// if next wave is the boss wave, only spawn the boss
-	else if (bCanSpawn && bIsBossWave)
-	{
-		SpawnNewBossWave();
-	}
 }
 
 // Finds all Spawnpoints, adds them to the array and return the number
@@ -158,15 +131,31 @@ void ASpaceInvadersGameMode::WinCheck()
 		GetWorld()->GetFirstPlayerController()->Pause();
 	}
 
-	// If there are no enemies left on the field, there are no more waves and no enemies reached the end
-	// and the boss is dead, the player wins
-
-	if (EnemiesLeftOnField == 0 && bBossWaveDone && !bEnemyHitTrigger)
+	// the classic checks (no extra checks for endless, as you can never win)
+	if (bIsClassic)
 	{
-		bIsGameOver = true;
-		bPlayerWon = true;
-		GetWorld()->GetFirstPlayerController()->Pause();
+		// If there are no enemies left on the field, there are no more waves and no enemies reached the end
+		// and the boss is dead, the player wins
+		if (EnemiesLeftOnField == 0 && bBossIsDead && !bEnemyHitTrigger)
+		{
+			bIsGameOver = true;
+			bPlayerWon = true;
+			GetWorld()->GetFirstPlayerController()->Pause();
+		}
 	}
+
+	if (bIsEndless && bBossIsDead)
+	{
+		for (ASpawnPoint* SpawnPoint : SpawnPoints)
+		{
+			if (SpawnPoint->GetIfBossSpawnpoint())
+			{
+				SpawnPoint->SetHaveSpawnedBoss(false);
+			}
+		}
+		EnemyBoss = nullptr;
+	}	
+
 }
 
 // Iterates through all enemies on the field
@@ -238,6 +227,14 @@ void ASpaceInvadersGameMode::SetGameIsPaused()
 {
 	GetWorld()->GetFirstPlayerController()->SetPause(true);
 	bGameIsPaused = true;
+}
+
+void ASpaceInvadersGameMode::SetBossIsDead()
+{
+	bBossIsDead = true;
+	bIsBossWave = false;
+	bBossHasSpawned = false;
+	BossKills++;
 }
 
 void ASpaceInvadersGameMode::SetGameIsNotPaused()

@@ -33,6 +33,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	int GetTimerToSpawn();
 	UFUNCTION(BlueprintCallable)
+	int GetBossKills() { return BossKills; }
+	UFUNCTION(BlueprintCallable)
 	bool CheckIfGameIsOver();
 	UFUNCTION(BlueprintCallable)
 	bool GetPlayerWon();
@@ -59,11 +61,14 @@ public:
 
 	// Used by the Boss to tell when he has spawned
 	UFUNCTION(BlueprintCallable)
-	void SetBossHasSpawned() { bBossHasSpawned = true; }
+	void SetBossHasSpawned() { 
+		bBossHasSpawned = true;
+		bBossIsDead = false;
+	}
 
 	// Boss sets this when it dies
 	UFUNCTION(BlueprintCallable)
-	void SetBossIsDead() { bBossWaveDone = true; }
+	void SetBossIsDead();
 
 	// Used by the UI to be able to get the health of the boss
 	UFUNCTION(BlueprintCallable)
@@ -76,9 +81,7 @@ public:
 
 	UAudioComponent* CurrentMusic;
 
-private:
-	//** Functions **//
-
+protected:
 	// Sets the basic variables used every game
 	ASpaceInvadersGameMode(const FObjectInitializer& ObjectInitializer);
 
@@ -93,7 +96,7 @@ private:
 
 	// Used by the timerhandle to set spawnrate
 	void CanNowSpawnNewShip();
-	
+
 	// Iterates through spawnpoints and calls the spawn ship function
 	void SpawnNewWave();
 
@@ -132,13 +135,19 @@ private:
 
 	int EnemiesLeftOnField;
 
+	int BossKills;
+
+	bool bIsClassic;
+
+	bool bIsEndless;
+
 	bool bIsCurrentlyPlayingMusic;
 	
 	bool bIsBossWave;
 
 	bool bBossHasSpawned;
 
-	bool bBossWaveDone;
+	bool bBossIsDead;
 
 	bool bIsGameOver;
 
