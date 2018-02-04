@@ -7,10 +7,13 @@
 #include "Math/UnrealMathUtility.h"
 #include "Components/AudioComponent.h"
 #include "Engine/World.h"
+#include "Engine/Engine.h"
 #include "TimerManager.h"
+#include "Containers/Array.h"
 #include "SpaceInvadersGameInstance.h"
 #include "Enemy.h"
 #include "SpawnPoint.h"
+#include "HighScoreSaver.h"
 
 // Init default variables on construction (variables that cannot be changed through in-game settings)
 ASpaceInvadersGameMode::ASpaceInvadersGameMode(const FObjectInitializer& ObjectInitializer)
@@ -147,41 +150,6 @@ void ASpaceInvadersGameMode::SpawnNewBossWave()
 	}
 }
 
-void ASpaceInvadersGameMode::WinCheck()
-{
-	// If the player is dead or an enemy reaches the end, the player loses
-	if (bIsPlayerDead() || bEnemyHitTrigger)
-	{
-		bIsGameOver = true;
-		GetWorld()->GetFirstPlayerController()->Pause();
-	}
-
-	// the classic checks (no extra checks for endless, as you can never win)
-	if (bIsClassic)
-	{
-		// If there are no enemies left on the field, there are no more waves and no enemies reached the end
-		// and the boss is dead, the player wins
-		if (EnemiesLeftOnField == 0 && bBossIsDead && !bEnemyHitTrigger)
-		{
-			bIsGameOver = true;
-			bPlayerWon = true;
-			GetWorld()->GetFirstPlayerController()->Pause();
-		}
-	}
-
-	if (bIsEndless && bBossIsDead)
-	{
-		for (ASpawnPoint* SpawnPoint : SpawnPoints)
-		{
-			if (SpawnPoint->GetIfBossSpawnpoint())
-			{
-				SpawnPoint->SetHaveSpawnedBoss(false);
-			}
-		}
-		EnemyBoss = nullptr;
-	}	
-
-}
 
 // Iterates through all enemies on the field
 void ASpaceInvadersGameMode::SetEnemiesLeftOnField()
@@ -222,5 +190,59 @@ void ASpaceInvadersGameMode::SetBossHasSpawned()
 	bBossIsDead = false;
 }
 
+void ASpaceInvadersGameMode::LoadHighScore()
+{
 
+	//*** LOADING HIGHSCORES  ***//
+	UE_LOG(LogTemp, Warning, TEXT("LOADING STARTED"))
+	// If there's any data in Highscores, clear it
+	if (HighScores.Num() > 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Clearing highscores"))
+		HighScores.Empty();
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("Checking to see if a file is present"))
+	LoadedGameObject = Cast<UHighscoreSaver>(UGameplayStatics::CreateSaveGameObject(UHighscoreSaver::StaticClass()));
+	LoadedGameObject = Cast<UHighscoreSaver>(UGameplayStatics::LoadGameFromSlot(LoadedGameObject->SaveSlotName, LoadedGameObject->UserIndex));
+	UE_LOG(LogTemp, Warning, TEXT("Check if LoadedGameObject == nullptr"))
+	if (LoadedGameObject != nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Not nullptr, found file on disk"))
+	}
+	else
+	{
+		// Create a SaveObject if none are present
+		UE_LOG(LogTemp, Warning, TEXT("Creating a new LoadedgameObject because none was present"))
+		LoadedGameObject = Cast<UHighscoreSaver>(UGameplayStatics::CreateSaveGameObject(UHighscoreSaver::StaticClass()));
+	}
+
+	
+	UE_LOG(LogTemp, Warning, TEXT("LoadedGameObject not nullptr, loading file from slot"))
+	//  Make a temporary Array of the savefile if data is available
+	if (LoadedGameObject->GetHighScoreData().Num() > 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("LoadedGameObject present, making temp array to add to local Highscores"))
+		auto LoadedGameData = LoadedGameObject->GetHighScoreData();
+
+		int temp = 0;
+		FHighScoreDataGM Data;
+		// Go through it all and add to Highscores (used for the in-game table)
+		for (auto& HighScoreData : LoadedGameData)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Adding HighscoreData index %d"), temp)
+			Data.PlayerName = HighScoreData.PlayerName;
+			Data.EnemiesKilled = HighScoreData.EnemiesKilled;
+			Data.WaveReached = HighScoreData.WaveReached;
+			Data.BossesKilled = HighScoreData.BossesKilled;
+			HighScores.Add(Data);
+			temp++;
+		}
+		//UE_LOG(LogTemp, Warning, TEXT("Sorting Highscores (EnemiesKilled)"))
+		//HighScores.Sort([](const FHighScoreDataGM& LHS, const FHighScoreDataGM& RHS) { return LHS.EnemiesKilled > RHS.EnemiesKilled; });
+		
+		UE_LOG(LogTemp, Warning, TEXT("LOADING FINISHED"))
+		//*** LOADING FINISHED ***//
+	}
+}
 

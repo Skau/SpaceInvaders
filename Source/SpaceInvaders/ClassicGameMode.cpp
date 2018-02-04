@@ -50,3 +50,26 @@ void AClassicGameMode::Tick(float DeltaTime)
 		SpawnNewBossWave();
 	}
 }
+
+void AClassicGameMode::WinCheck()
+{
+	// If the player is dead or an enemy reaches the end, the player loses
+	if (bIsPlayerDead() || bEnemyHitTrigger)
+	{
+		bIsGameOver = true;
+		GetWorld()->GetFirstPlayerController()->Pause();
+	}
+
+	// the classic checks (no extra checks for endless, as you can never win)
+	if (bIsClassic)
+	{
+		// If there are no enemies left on the field, there are no more waves and no enemies reached the end
+		// and the boss is dead, the player wins
+		if (EnemiesLeftOnField == 0 && bBossIsDead && !bEnemyHitTrigger)
+		{
+			bIsGameOver = true;
+			bPlayerWon = true;
+			GetWorld()->GetFirstPlayerController()->Pause();
+		}
+	}
+}

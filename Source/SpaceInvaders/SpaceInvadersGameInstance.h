@@ -18,6 +18,9 @@ class SPACEINVADERS_API USpaceInvadersGameInstance : public UGameInstance
 	// Used for the settings menu
 public:
 	UFUNCTION(BlueprintCallable)
+	void SetPlayerName(FString Name) { PlayerName = Name; }
+
+	UFUNCTION(BlueprintCallable)
 	int GetTotalWaves() { return TotalWaves; }
 
 	UFUNCTION(BlueprintCallable)
@@ -41,12 +44,15 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetSoundEffectsAllowed(bool value) { bIsSoundEffectsAllowed = value; }
 
+	FString GetPlayerName() { return PlayerName; }
+
 private:
+	bool bHighScoreIsLoaded;
 	bool bIsMusicAllowed = true;
 	bool bIsSoundEffectsAllowed = true;
 	int TotalWaves = 10;
 	int SpawnRate = 3;
-
+	FString PlayerName;
 	
 	
 };

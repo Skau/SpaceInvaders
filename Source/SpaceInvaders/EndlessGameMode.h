@@ -25,7 +25,10 @@ private:
 	
 	virtual void Tick(float DeltaTime) override;
 
-
-	int CurrentWave;
 	int CurrentWaveCounter;
+
+	void WinCheck();
+	
+	void SaveData();
+
 };

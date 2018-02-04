@@ -13,6 +13,23 @@ class AEnemyBoss;
 class ASpawnPoint;
 class USoundBase;
 class UAudioComponent;
+class UHighscoreSaver;
+
+USTRUCT(BlueprintType)
+struct FHighScoreDataGM
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString PlayerName = "DefaultPlayerName(GameMode)";
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int WaveReached = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int EnemiesKilled = 0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int BossesKilled = 0;
+};
+
 
 UCLASS(MinimalAPI)
 class ASpaceInvadersGameMode : public AGameModeBase
@@ -21,6 +38,15 @@ class ASpaceInvadersGameMode : public AGameModeBase
 
 public:
 	// Getters for variables used by the UI widget during game
+	UFUNCTION(BlueprintCallable)
+	bool GetHighScoreIsOpen() { return bHighScoreIsOpen; }
+
+	UFUNCTION(BlueprintCallable)
+	void SetHighScoreIsOpen(bool Value) { bHighScoreIsOpen = Value; }
+
+	UFUNCTION(BlueprintCallable)
+	TArray<FHighScoreDataGM> GetHighScores() { return HighScores; }
+
 	UFUNCTION(BlueprintCallable)
 	int GetWavesLeft() { return TotalWavesLeft; }
 
@@ -57,12 +83,15 @@ public:
 	UFUNCTION(BlueprintCallable)
 	AEnemyBoss* getEnemyBoss() { return EnemyBoss; }
 
+	UFUNCTION(BlueprintCallable)
+	UHighscoreSaver* GetLoadedGameObject() { return LoadedGameObject; }
+
+	UFUNCTION(BlueprintCallable)
+	void LoadHighScore();
+
 	// The boss sets this when it spawns
 	UFUNCTION(BlueprintCallable)
 	void SetEnemyBoss(AEnemyBoss* Boss) { EnemyBoss = Boss; }
-
-	UFUNCTION(BlueprintCallable)
-	UAudioComponent* GetCurrentMusic() { return CurrentMusic; }
 
 	// Variables used for the wincheck, set from Player Pawn and Enemy Actor respectively
 	bool bPlayerIsDead;
@@ -90,8 +119,12 @@ public:
 	void SetBossIsDead();
 
 	// Used to set the background music
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(BlueprintReadWrite)
 	USoundBase* Music;
+
+	UPROPERTY(BlueprintReadWrite)
+	TArray<FHighScoreDataGM> HighScores;
+
 
 protected:
 	// Sets the basic variables used every game
@@ -124,10 +157,11 @@ protected:
 	// Decrements one enemy from the total number left to spawn
 	void SetEnemiesLeftToSpawn() { EnemiesLeftToSpawn--; }
 
-	// Checks for when the game is over
-	void WinCheck();
-
 	//** Variables **//
+
+	UHighscoreSaver* LoadedGameObject;
+
+	UHighscoreSaver* SaveGameObject;
 
 	UAudioComponent* CurrentMusic;
 
@@ -138,6 +172,8 @@ protected:
 	FTimerHandle SpawnTimerHandle;
 
 	TArray<ASpawnPoint*> SpawnPoints;
+
+	int CurrentWave;
 
 	int TotalWaves;
 
@@ -150,6 +186,8 @@ protected:
 	int EnemiesLeftOnField;
 
 	int BossKills;
+
+	bool bHighScoreIsOpen;
 
 	bool bIsMusicAllowed;
 

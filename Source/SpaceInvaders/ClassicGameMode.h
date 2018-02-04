@@ -19,4 +19,6 @@ class SPACEINVADERS_API AClassicGameMode : public ASpaceInvadersGameMode
 	virtual void BeginPlay() override;
 
 	virtual void Tick(float DeltaTime) override;
+
+	void WinCheck();
 };
