@@ -7,6 +7,7 @@
 #include "SpaceInvadersPawn.generated.h"
 
 // Forward Declarations
+class UStaticMeshComponent;
 class AEnemy;
 class ASpaceInvadersGameMode;
 class ASpaceInvadersProjectile;
@@ -16,52 +17,43 @@ class ASpaceInvadersPawn : public APawn
 {
 	GENERATED_BODY()
 
-	// The mesh component
-	UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class UStaticMeshComponent* ShipMeshComponent;
-
 public:
 	// Constructor
 	ASpaceInvadersPawn();
+
+	virtual void Tick(float DeltaSeconds) override;
+
+	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 
 	// For use when colliding with actors
 	UFUNCTION()
 	void OnHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
 
 	// Offset from the ships location to spawn projectiles 
-	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite )
+	UPROPERTY(VisibleAnywhere, Category = "Gameplay")
 	FVector GunOffset;
 	
 	// How fast the weapon will fire
-	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, Category = "Gameplay")
 	float FireRate;
 
 	// The speed our ship moves around the level
-	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, Category = "Gameplay")
 	float MoveSpeed;
 
 	// Sound to play each time we fire
-	UPROPERTY(Category = Audio, EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, Category = "Audio")
 	class USoundBase* FireSound;
 
-	// Begin Actor Interface
-	virtual void Tick(float DeltaSeconds) override;
-	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
-	// End Actor Interface
-
 	// Fire a shot in the specified direction
-	void FireShot(FVector FireDirection);
+	void FireShot();
 
 	// Handler for the fire timer expiry
 	void ShotTimerExpired();
 
 	// Static names for axis bindings
-	static const FName MoveForwardBinding; // not currently used
 	static const FName MoveRightBinding;
 	static const FName FireForwardBinding;
-
-	// Returns ShipMeshComponent subobject
-	FORCEINLINE class UStaticMeshComponent* GetShipMeshComponent() const { return ShipMeshComponent; }
 
 	// Returns the health for the UI
 	UFUNCTION(BlueprintCallable)
@@ -75,19 +67,30 @@ public:
 	TSubclassOf<ASpaceInvadersProjectile> Projectile_BP;
 
 private:
+
+	// The mesh component
+	UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UStaticMeshComponent* ShipMeshComponent;
+
 	UPROPERTY(VisibleAnywhere)
 	float Health = 100;
+	
+	// Pointer to the GameMode
+	UPROPERTY(VisibleAnywhere)
+	ASpaceInvadersGameMode* GameMode;
 
 	// Flag to control firing
-	uint32 bCanFire : 1;
+	bool bCanFire;
 
 	// Handle for efficient management of ShotTimerExpired timer
 	FTimerHandle TimerHandle_ShotTimerExpired;
 
+	void Move(float DeltaSeconds);
+
 	// Pauses the game
 	void PauseGame();
 
-	ASpaceInvadersGameMode* GameMode;
+
 
 };
 

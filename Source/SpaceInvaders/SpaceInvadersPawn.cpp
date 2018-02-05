@@ -62,6 +62,23 @@ void ASpaceInvadersPawn::Tick(float DeltaSeconds)
 {
 	GameMode = (ASpaceInvadersGameMode*)(GetWorld()->GetAuthGameMode());
 
+	Move(DeltaSeconds);
+	
+	bool IsFirePressed = GetInputAxisValue(FireForwardBinding);
+	if (IsFirePressed)
+	{
+		FireShot();
+	}
+
+	if (Health <= 0)
+	{
+		GameMode->bPlayerIsDead = true;
+		Destroy();
+	}
+}
+
+void ASpaceInvadersPawn::Move(float DeltaSeconds)
+{
 	// Variables used for calculating movement
 	const float RightValue = GetInputAxisValue(MoveRightBinding);
 	const FVector MoveDirection = FVector(0.f, RightValue, 0.f);
@@ -72,7 +89,7 @@ void ASpaceInvadersPawn::Tick(float DeltaSeconds)
 	{
 		FHitResult Hit(1.f);
 		RootComponent->MoveComponent(Movement, FRotator(0), true, &Hit);
-		
+
 		// If a wall is hit, stop the player from moving through it
 		if (Hit.IsValidBlockingHit())
 		{
@@ -81,24 +98,13 @@ void ASpaceInvadersPawn::Tick(float DeltaSeconds)
 			RootComponent->MoveComponent(Deflection, FRotator(0), true);
 		}
 	}
-	
-	bool IsFirePressed = GetInputAxisValue(FireForwardBinding);
-	if (IsFirePressed)
-	{
-		FireShot(FVector(1, 0, 0));
-	}
-
-	if (Health <= 0)
-	{
-		GameMode->bPlayerIsDead = true;
-		Destroy();
-	}
 }
 
-void ASpaceInvadersPawn::FireShot(FVector FireDirection)
+void ASpaceInvadersPawn::FireShot()
 {
 	if (bCanFire == true && Projectile_BP != nullptr)
 	{
+		FVector FireDirection = FVector(1, 0, 0);
 		FRotator FireRotation = FireDirection.Rotation();
 		FVector SpawnLocation = GetActorLocation() + FireRotation.RotateVector(GunOffset);
 	
