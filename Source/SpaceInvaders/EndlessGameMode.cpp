@@ -94,11 +94,11 @@ void AEndlessGameMode::WinCheck()
 		temp.BossesKilled = BossKills;
 		HighScores.Add(temp);
 
-		SaveData();
+		SaveData(temp);
 	}
 }
 
-void AEndlessGameMode::SaveData()
+void AEndlessGameMode::SaveData(FHighScoreDataGM data)
 {
 		//*** SAVING STARTED ***///
 	UE_LOG(LogTemp, Warning, TEXT("SAVING STARTED"))
@@ -110,57 +110,22 @@ void AEndlessGameMode::SaveData()
 	if (LoadedGameObject != nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Found file on disk"))
-		UE_LOG(LogTemp, Warning, TEXT("Check if data is available in LoadedGameObject"))
-		if (LoadedGameObject->GetHighScoreData().Num() > 0)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Data present"))
-			UE_LOG(LogTemp, Warning, TEXT("Adding data to temp array"))
-			auto DataArray = LoadedGameObject->GetHighScoreData();
-			int temp = 0;
-			FHighScoreDataGM HighScoreData;
-			UE_LOG(LogTemp, Warning, TEXT("Going through saved data and adding it to local highscore"))
-			// Go through it all and add to Highscores (used for the in-game table)
-			for (auto& Data : DataArray)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("DataArray index %d"), temp)
-				Data.PlayerName = HighScoreData.PlayerName;
-				Data.EnemiesKilled = HighScoreData.EnemiesKilled;
-				Data.WaveReached = HighScoreData.WaveReached;
-				Data.BossesKilled = HighScoreData.BossesKilled;
-				HighScores.Add(HighScoreData);
-				temp++;
-			}
-
-			UE_LOG(LogTemp, Warning, TEXT("Sorting local highscores, ready to be added to savefile"))
-			// Sorts the array, so it's ready to be saved
-			HighScores.Sort([](const FHighScoreDataGM& Data1, const FHighScoreDataGM& Data2) {
-			return Data1.EnemiesKilled > Data2.EnemiesKilled;
-			});
-
-			// Emptying array data on file
-			UE_LOG(LogTemp, Warning, TEXT("Clearing saved data"))
-			LoadedGameObject->HighScoreArray.Empty();
-		}
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("LoadedGameObject == nullptr, so creating new object to save to"))
+		UE_LOG(LogTemp, Warning, TEXT("No file found on disk, so creating new object to save to"))
 		LoadedGameObject = Cast<UHighscoreSaver>(UGameplayStatics::CreateSaveGameObject(UHighscoreSaver::StaticClass()));
 	}
+	UE_LOG(LogTemp, Warning, TEXT("Creating temp struct from saveobject"))
+	auto lol = LoadedGameObject->HighScoreInfo;
+	UE_LOG(LogTemp, Warning, TEXT("Adding last score to struct"))
+	lol.PlayerName = data.PlayerName;
+	lol.BossesKilled = data.BossesKilled;
+	lol.WaveReached = data.WaveReached;
+	lol.EnemiesKilled = data.EnemiesKilled;
+	UE_LOG(LogTemp, Warning, TEXT("struct added to array in savefile"))
+	LoadedGameObject->AddDataToArray(lol);
 
-	// Adding local highscore to the file array
-	UE_LOG(LogTemp, Warning, TEXT("Adding local highscore to file"))
-	int temp = 0;
-	for (auto& Data : HighScores)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("HighScores index %d"), temp)
-		LoadedGameObject->HighScoreInfo.PlayerName = Data.PlayerName;
-		LoadedGameObject->HighScoreInfo.EnemiesKilled = Data.EnemiesKilled;
-		LoadedGameObject->HighScoreInfo.WaveReached = Data.WaveReached;
-		LoadedGameObject->HighScoreInfo.BossesKilled = Data.BossesKilled;
-		LoadedGameObject->AddDataToArray(LoadedGameObject->HighScoreInfo);
-		temp++;
-	}
 	UE_LOG(LogTemp, Warning, TEXT("Saving to file"))
 	UGameplayStatics::SaveGameToSlot(LoadedGameObject, LoadedGameObject->SaveSlotName, LoadedGameObject->UserIndex);
 

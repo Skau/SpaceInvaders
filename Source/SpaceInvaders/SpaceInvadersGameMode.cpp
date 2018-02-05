@@ -192,7 +192,6 @@ void ASpaceInvadersGameMode::SetBossHasSpawned()
 
 void ASpaceInvadersGameMode::LoadHighScore()
 {
-
 	//*** LOADING HIGHSCORES  ***//
 	UE_LOG(LogTemp, Warning, TEXT("LOADING STARTED"))
 	// If there's any data in Highscores, clear it
@@ -202,23 +201,21 @@ void ASpaceInvadersGameMode::LoadHighScore()
 		HighScores.Empty();
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("Checking to see if a file is present"))
 	LoadedGameObject = Cast<UHighscoreSaver>(UGameplayStatics::CreateSaveGameObject(UHighscoreSaver::StaticClass()));
 	LoadedGameObject = Cast<UHighscoreSaver>(UGameplayStatics::LoadGameFromSlot(LoadedGameObject->SaveSlotName, LoadedGameObject->UserIndex));
-	UE_LOG(LogTemp, Warning, TEXT("Check if LoadedGameObject == nullptr"))
+	UE_LOG(LogTemp, Warning, TEXT("Checking to see if a file is present"))
 	if (LoadedGameObject != nullptr)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Not nullptr, found file on disk"))
+		UE_LOG(LogTemp, Warning, TEXT("Found file on disk"))
 	}
 	else
 	{
 		// Create a SaveObject if none are present
-		UE_LOG(LogTemp, Warning, TEXT("Creating a new LoadedgameObject because none was present"))
+		UE_LOG(LogTemp, Warning, TEXT("No file found, creating new"))
 		LoadedGameObject = Cast<UHighscoreSaver>(UGameplayStatics::CreateSaveGameObject(UHighscoreSaver::StaticClass()));
 	}
 
-	
-	UE_LOG(LogTemp, Warning, TEXT("LoadedGameObject not nullptr, loading file from slot"))
+	UE_LOG(LogTemp, Warning, TEXT("Data found"))
 	//  Make a temporary Array of the savefile if data is available
 	if (LoadedGameObject->GetHighScoreData().Num() > 0)
 	{
@@ -238,8 +235,8 @@ void ASpaceInvadersGameMode::LoadHighScore()
 			HighScores.Add(Data);
 			temp++;
 		}
-		//UE_LOG(LogTemp, Warning, TEXT("Sorting Highscores (EnemiesKilled)"))
-		//HighScores.Sort([](const FHighScoreDataGM& LHS, const FHighScoreDataGM& RHS) { return LHS.EnemiesKilled > RHS.EnemiesKilled; });
+		UE_LOG(LogTemp, Warning, TEXT("Sorting Highscores"))
+		HighScores.Sort([](const FHighScoreDataGM& LHS, const FHighScoreDataGM& RHS) { return LHS.EnemiesKilled > RHS.EnemiesKilled; });
 		
 		UE_LOG(LogTemp, Warning, TEXT("LOADING FINISHED"))
 		//*** LOADING FINISHED ***//

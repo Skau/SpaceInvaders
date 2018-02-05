@@ -29,6 +29,6 @@ private:
 
 	void WinCheck();
 	
-	void SaveData();
+	void SaveData(FHighScoreDataGM data);
 
 };
