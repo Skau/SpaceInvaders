@@ -167,6 +167,14 @@ void ASpaceInvadersGameMode::SetEnemiesLeftOnField()
 void ASpaceInvadersGameMode::SetGameIsPaused()
 {
 	GetWorld()->GetFirstPlayerController()->SetPause(true);
+	if (Music != nullptr)
+	{
+		if (!GameInstance->GetMusicAllowed() && bIsCurrentlyPlayingMusic)
+		{
+			CurrentMusic->Stop();
+			bIsCurrentlyPlayingMusic = false;
+		}
+	}
 	bGameIsPaused = true;
 }
 
