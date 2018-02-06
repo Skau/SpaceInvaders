@@ -15,13 +15,13 @@ struct FHighScoreDataGM
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString PlayerName = "DefaultPlayerName(GameMode)";
+	FString PlayerName;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int WaveReached = 0;
+	int WaveReached;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int EnemiesKilled = 0;
+	int EnemiesKilled;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int BossesKilled = 0;
+	int BossesKilled;
 };
 
 /**

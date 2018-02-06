@@ -47,7 +47,10 @@ void AClassicGameMode::Tick(float DeltaTime)
 	// if next wave is the boss wave, only spawn the boss
 	else if (bCanSpawn && bIsBossWave)
 	{
-		SpawnNewBossWave();
+		if (!EnemiesLeftOnField)
+		{
+			SpawnNewBossWave();
+		}
 	}
 }
 

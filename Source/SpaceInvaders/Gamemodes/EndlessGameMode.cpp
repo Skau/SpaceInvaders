@@ -51,10 +51,13 @@ void AEndlessGameMode::Tick(float DeltaTime)
 		// if next wave is the boss wave, only spawn the boss
 		else if (bCanSpawn && bIsBossWave)
 		{
-			SpawnNewBossWave();
-			SpawnRate = 3;
-			Timer = SpawnRate;
-			GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle, this, &AEndlessGameMode::CanNowSpawnNewShip, SpawnRate);
+			if (!EnemiesLeftOnField)
+			{
+				SpawnNewBossWave();
+				SpawnRate = 3;
+				Timer = SpawnRate;
+				GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle, this, &AEndlessGameMode::CanNowSpawnNewShip, SpawnRate);
+			}
 		}
 	}
 }
