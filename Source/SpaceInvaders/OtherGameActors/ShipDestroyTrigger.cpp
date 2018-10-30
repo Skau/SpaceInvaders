@@ -42,7 +42,7 @@ void AShipDestroyTrigger::OnBeginOverlap(UPrimitiveComponent * OverlappedComp, A
 		{
 			Enemy->Destroy();
 			auto GameMode = (ASpaceInvadersGameMode*)(GetWorld()->GetAuthGameMode());
-			GameMode->bEnemyHitTrigger = true;
+			GameMode->SetEnemyHitTrigger(true);
 		}
 	}
 }

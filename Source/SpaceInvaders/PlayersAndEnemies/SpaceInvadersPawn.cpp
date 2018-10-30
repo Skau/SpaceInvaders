@@ -64,15 +64,14 @@ void ASpaceInvadersPawn::Tick(float DeltaSeconds)
 
 	Move(DeltaSeconds);
 	
-	bool IsFirePressed = GetInputAxisValue(FireForwardBinding);
-	if (IsFirePressed)
+	if (GetInputAxisValue(FireForwardBinding))
 	{
 		FireShot();
 	}
 
 	if (Health <= 0)
 	{
-		GameMode->bPlayerIsDead = true;
+		GameMode->SetPlayerDead(true);
 		Destroy();
 	}
 }

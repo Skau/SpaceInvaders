@@ -54,7 +54,7 @@ void ASpaceInvadersGameMode::BeginPlay()
 	// Sets the spawnrate
 	SpawnRate = GameInstance->GetSpawnRate();
 
-	if (Music != nullptr)
+	if (Music)
 	{
 		CurrentMusic->SetSound(Music);
 		CurrentMusic->bIsUISound = true;
@@ -64,8 +64,7 @@ void ASpaceInvadersGameMode::BeginPlay()
 			CurrentMusic->Play();
 			bIsCurrentlyPlayingMusic = true;
 		}
-
-		if (!GameInstance->GetMusicAllowed())
+		else
 		{
 			CurrentMusic->Stop();
 			bIsCurrentlyPlayingMusic = false;
@@ -108,9 +107,8 @@ void ASpaceInvadersGameMode::Tick(float DeltaSeconds)
 		Timer = Timer - DeltaSeconds * 1;
 	}
 
-	// Updates the current Enemies on  field to the current number
+	// Updates the current Enemies on field
 	SetEnemiesLeftOnField();
-
 }
 
 // Finds all Spawnpoints, adds them to the array and return the number
@@ -167,7 +165,7 @@ void ASpaceInvadersGameMode::SetEnemiesLeftOnField()
 void ASpaceInvadersGameMode::SetGameIsPaused()
 {
 	GetWorld()->GetFirstPlayerController()->SetPause(true);
-	if (Music != nullptr)
+	if (Music && CurrentMusic)
 	{
 		if (!GameInstance->GetMusicAllowed() && bIsCurrentlyPlayingMusic)
 		{

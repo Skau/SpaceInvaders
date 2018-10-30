@@ -18,7 +18,7 @@ AEnemyBoss::AEnemyBoss()
 	PrimaryActorTick.bCanEverTick = true;
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> Mesh(TEXT("/Game/Meshes/BossShip/Boss.Boss"));
-	// Create the mesh component
+
 	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	RootComponent = MeshComponent;
 	MeshComponent->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
@@ -143,7 +143,7 @@ void AEnemyBoss::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor * O
 	{
 		bHitPlayer = true;
 		auto GameMode = (ASpaceInvadersGameMode*)(GetWorld()->GetAuthGameMode());
-		GameMode->bPlayerIsDead = true;
+		GameMode->SetPlayerDead(true);
 		OtherActor->Destroy();
 	}
 }

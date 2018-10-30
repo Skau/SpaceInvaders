@@ -19,7 +19,6 @@ AEndlessGameMode::AEndlessGameMode(const FObjectInitializer& ObjectInitializer)
 void AEndlessGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
 
 void AEndlessGameMode::Tick(float DeltaTime)
@@ -47,7 +46,6 @@ void AEndlessGameMode::Tick(float DeltaTime)
 			}
 			GetWorld()->GetTimerManager().SetTimer(SpawnTimerHandle, this, &AEndlessGameMode::CanNowSpawnNewShip, SpawnRate);
 		}
-
 		// if next wave is the boss wave, only spawn the boss
 		else if (bCanSpawn && bIsBossWave)
 		{
@@ -77,7 +75,7 @@ void AEndlessGameMode::WinCheck()
 	}
 
 	// If the player is dead or an enemy reaches the end, the player loses
-	if (bIsPlayerDead() || bEnemyHitTrigger)
+	if (bPlayerIsDead || bEnemyHitTrigger)
 	{
 		// Sets that the game is over, and pauses the game (so you can still use UI)
 		bIsGameOver = true;
@@ -102,36 +100,20 @@ void AEndlessGameMode::WinCheck()
 
 void AEndlessGameMode::SaveData(FHighScoreDataGM data)
 {
-	//*** SAVING STARTED ***///
-	UE_LOG(LogTemp, Warning, TEXT("SAVING STARTED"))
-
-	// Loading data from the file
-	UE_LOG(LogTemp, Warning, TEXT("Checking to see if a file is present"))
 	LoadedGameObject = Cast<UHighscoreSaver>(UGameplayStatics::CreateSaveGameObject(UHighscoreSaver::StaticClass()));
 	LoadedGameObject = Cast<UHighscoreSaver>(UGameplayStatics::LoadGameFromSlot(LoadedGameObject->SaveSlotName, LoadedGameObject->UserIndex));
-	if (LoadedGameObject != nullptr)
+	if (!LoadedGameObject)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Found file on disk"))
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("No file found on disk, so creating new object to save to"))
 		LoadedGameObject = Cast<UHighscoreSaver>(UGameplayStatics::CreateSaveGameObject(UHighscoreSaver::StaticClass()));
 	}
+	auto Data = LoadedGameObject->HighScoreInfo;
 
-	UE_LOG(LogTemp, Warning, TEXT("Creating temp struct from saveobject"))
-	auto lol = LoadedGameObject->HighScoreInfo;
-	UE_LOG(LogTemp, Warning, TEXT("Adding last score to struct"))
-	lol.PlayerName = data.PlayerName;
-	lol.BossesKilled = data.BossesKilled;
-	lol.WaveReached = data.WaveReached;
-	lol.EnemiesKilled = data.EnemiesKilled;
-	UE_LOG(LogTemp, Warning, TEXT("struct added to array in savefile"))
-	LoadedGameObject->AddDataToArray(lol);
+	Data.PlayerName = data.PlayerName;
+	Data.BossesKilled = data.BossesKilled;
+	Data.WaveReached = data.WaveReached;
+	Data.EnemiesKilled = data.EnemiesKilled;
 
-	UE_LOG(LogTemp, Warning, TEXT("Saving to file"))
+	LoadedGameObject->AddDataToArray(Data);
+
 	UGameplayStatics::SaveGameToSlot(LoadedGameObject, LoadedGameObject->SaveSlotName, LoadedGameObject->UserIndex);
-
-	UE_LOG(LogTemp, Warning, TEXT("SAVING FINISHED"))
-	//*** SAVING FINISHED ***//
 }

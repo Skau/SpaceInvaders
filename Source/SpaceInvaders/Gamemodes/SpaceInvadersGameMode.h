@@ -60,31 +60,18 @@ public:
 	UFUNCTION(BlueprintCallable)
 	AEnemyBoss* getEnemyBoss() { return EnemyBoss; }
 
-	// The boss sets this when it spawns
-	UFUNCTION(BlueprintCallable)
-	void SetEnemyBoss(AEnemyBoss* Boss) { EnemyBoss = Boss; }
-
-	// Variables used for the wincheck, set from Player Pawn and Enemy Actor respectively
-	bool bPlayerIsDead;
-	bool bEnemyHitTrigger;
-
-	// Used to increment the kill counter by the projectile
-	void SetShipsKilled() { EnemyShipsKilled++; }
-
-	// Used by the player, boss and projectile to see if allowed to play sounds
-	bool GetbIsSoundEffectsAllowed() { return bIsSoundEffectsAllowed; }
-
 	// Used by the UI to resume the game
 	UFUNCTION(BlueprintCallable)
 	void SetGameIsNotPaused();
 
-	// Used by the player controller (action binding) to pause the game
-	void SetGameIsPaused();
+	// The boss sets this when it spawns
+	UFUNCTION(BlueprintCallable)
+	void SetEnemyBoss(AEnemyBoss* Boss) { EnemyBoss = Boss; }
 
 	// Used by the Boss to tell when he has spawned
 	UFUNCTION(BlueprintCallable)
 	void SetBossHasSpawned();
-	
+
 	// Boss sets this when it dies
 	UFUNCTION(BlueprintCallable)
 	void SetBossIsDead();
@@ -92,6 +79,22 @@ public:
 	// Used to set the background music
 	UPROPERTY(BlueprintReadWrite)
 	USoundBase* Music;
+
+	// Returns if the player is dead
+	bool GetIsPlayerDead() { return bPlayerIsDead; }
+	void SetPlayerDead(bool Value) { bPlayerIsDead = Value; }
+
+	bool DidEnemyHitTrigger() { return bEnemyHitTrigger; }
+	void SetEnemyHitTrigger(bool Value) { bEnemyHitTrigger = Value; }
+
+	// Used to increment the kill counter by the projectile
+	void SetShipsKilled() { EnemyShipsKilled++; }
+
+	// Used by the player, boss and projectile to see if allowed to play sounds
+	bool GetbIsSoundEffectsAllowed() { return bIsSoundEffectsAllowed; }
+
+	// Used by the player controller (action binding) to pause the game
+	void SetGameIsPaused();
 
 protected:
 	// Sets the basic variables used every game
@@ -118,13 +121,12 @@ protected:
 	// Iterates through and counts current enemies on the field
 	void SetEnemiesLeftOnField();
 
-	// Returns if the player is dead
-	bool bIsPlayerDead() { return bPlayerIsDead; }
-
 	// Decrements one enemy from the total number left to spawn
 	void SetEnemiesLeftToSpawn() { EnemiesLeftToSpawn--; }
 
-	//** Variables **//
+
+	// ******* Variables ******* //
+
 	UAudioComponent* CurrentMusic;
 
 	AEnemyBoss* EnemyBoss;
@@ -135,50 +137,32 @@ protected:
 
 	TArray<ASpawnPoint*> SpawnPoints;
 
-	int CurrentWave;
-
-	int TotalWaves;
-
-	int TotalWavesLeft;
-
-	int EnemiesLeftToSpawn;
-	
-	int EnemyShipsKilled;
-
-	int EnemiesLeftOnField;
-
-	int BossKills;
-
-	bool bIsMusicAllowed;
-
-	bool bIsSoundEffectsAllowed;
-
-	bool bIsClassic;
-
-	bool bIsEndless;
-
-	bool bIsCurrentlyPlayingMusic;
-	
-	bool bIsBossWave;
-
-	bool bBossHasSpawned;
-
-	bool bBossIsDead;
-
-	bool bIsGameOver;
-
-	bool bPlayerWon;
-
-	bool bCanSpawn;
-
-	bool bPlayerHitByEnemy;
-
-	bool bGameIsPaused;
-
 	float SpawnRate;
-
 	float Timer;
 
+	int CurrentWave;
+	int TotalWaves;
+	int TotalWavesLeft;
+	int EnemiesLeftToSpawn;
+	int EnemyShipsKilled;
+	int EnemiesLeftOnField;
+	int BossKills;
+
+	bool bPlayerIsDead;
+	bool bEnemyHitTrigger;
+	bool bIsMusicAllowed;
+	bool bIsSoundEffectsAllowed;
+	bool bIsClassic;
+	bool bIsEndless;
+	bool bIsCurrentlyPlayingMusic;
+	bool bIsBossWave;
+	bool bBossHasSpawned;
+	bool bBossIsDead;
+	bool bIsGameOver;
+	bool bPlayerWon;
+	bool bCanSpawn;
+	bool bPlayerHitByEnemy;
+	bool bGameIsPaused;
 };
 
 

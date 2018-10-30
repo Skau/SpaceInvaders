@@ -19,7 +19,7 @@ AEnemy::AEnemy()
 	PrimaryActorTick.bCanEverTick = true;
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> ShipMesh(TEXT("/Game/Meshes/AlienShip/Alien.Alien"));
-	// Create the mesh component
+
 	ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMesh"));
 	RootComponent = ShipMeshComponent;
 	ShipMeshComponent->SetCollisionProfileName(TEXT("OverlapAllDynamic"));
@@ -27,6 +27,7 @@ AEnemy::AEnemy()
 	ShipMeshComponent->SetNotifyRigidBodyCollision(true);
 	ShipMeshComponent->OnComponentBeginOverlap.AddDynamic(this, &AEnemy::OnOverlapBegin);
 
+	bHitPlayer = false;
 	bCanMoveLeftOrRight = true;
 	MoveLeftOrRightRate = 2.f;
 }
@@ -37,8 +38,8 @@ void AEnemy::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor * Other
 	if (OtherActor->IsA(ASpaceInvadersPawn::StaticClass()))
 	{
 		bHitPlayer = true;
-		auto GameMode = (ASpaceInvadersGameMode*)(GetWorld()->GetAuthGameMode());
-		GameMode->bPlayerIsDead = true;
+		auto GameMode = Cast<ASpaceInvadersGameMode>(GetWorld()->GetAuthGameMode());
+		GameMode->SetPlayerDead(true);
 		OtherActor->Destroy();
 	}
 }
@@ -64,31 +65,16 @@ void AEnemy::Tick(float DeltaTime)
 }
 // Moves down towards the player each frame
 void AEnemy::Move(float DeltaTime)
-{
-	FVector CurrentLocation = GetActorLocation();
-	FVector MoveDirection = FVector(-1.f, 0.f, 0.f);
-	FVector NewLocation = CurrentLocation + MoveDirection * MoveSpeed * DeltaTime;
-
+{  
+	FVector NewLocation = GetActorLocation() + FVector(-1.f, 0.f, 0.f) * MoveSpeed * DeltaTime;
 	SetActorLocation(NewLocation);
 }
 // The directon bool is either 1 or 0 (right or left), changes each time so you never know which way the enemy will move
 void AEnemy::MoveLeftorRight(float DeltaTime)
 {
-	FVector CurrentLocation = GetActorLocation();
-	FVector NewLocation;
-	if (Direction)
-	{
-		FVector MoveDirection = FVector(0.f, 350.f, 0.f);
-		NewLocation = CurrentLocation + MoveDirection;
-		Direction = false;
-	}
-	else
-	{
-		FVector MoveDirection = FVector(0.f, -350.f, 0.f);
-		NewLocation = CurrentLocation + MoveDirection;
-		Direction = true;
-	}
-	SetActorLocation(NewLocation);
+	FVector MoveDirection = Direction ? FVector(0.f, 350.f, 0.f) : FVector(0.f, -350.f, 0.f);
+	Direction = !Direction;
+	SetActorLocation(GetActorLocation() + MoveDirection);
 }
 // For the timer handle
 void AEnemy::SetbCanMoveLeftOrRight()

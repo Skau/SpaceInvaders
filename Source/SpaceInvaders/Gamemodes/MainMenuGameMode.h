@@ -6,7 +6,6 @@
 #include "GameFramework/GameModeBase.h"
 #include "MainMenuGameMode.generated.h"
 
-// Forward declarations
 class UHighscoreSaver;
 class USoundBase;
 class UAudioComponent;
@@ -64,6 +63,7 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	TArray<FHighScoreDataMM> HighScores;
 
+private:
 	UHighscoreSaver* LoadedGameObject;
 
 	UAudioComponent* CurrentMusic;

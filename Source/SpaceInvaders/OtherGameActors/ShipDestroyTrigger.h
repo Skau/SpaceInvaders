@@ -6,10 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "ShipDestroyTrigger.generated.h"
 
-// Forward Declarations
 class UBoxComponent;
-class AEnemy;
-class ASpaceInvadersGameMode;
 
 UCLASS()
 class SPACEINVADERS_API AShipDestroyTrigger : public AActor
@@ -17,12 +14,10 @@ class SPACEINVADERS_API AShipDestroyTrigger : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
 	AShipDestroyTrigger();
-	// Called when the game starts or when spawned
+
 	virtual void BeginPlay() override;
 
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 private:

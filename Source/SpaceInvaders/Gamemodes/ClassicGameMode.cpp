@@ -57,7 +57,7 @@ void AClassicGameMode::Tick(float DeltaTime)
 void AClassicGameMode::WinCheck()
 {
 	// If the player is dead or an enemy reaches the end, the player loses
-	if (bIsPlayerDead() || bEnemyHitTrigger)
+	if (GetIsPlayerDead() || bEnemyHitTrigger)
 	{
 		bIsGameOver = true;
 		GetWorld()->GetFirstPlayerController()->Pause();

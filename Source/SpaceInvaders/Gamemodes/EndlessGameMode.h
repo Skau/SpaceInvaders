@@ -49,11 +49,11 @@ private:
 	
 	virtual void Tick(float DeltaTime) override;
 
-	int CurrentWaveCounter;
-
 	void WinCheck();
 	
 	void SaveData(FHighScoreDataGM data);
+
+	int CurrentWaveCounter;
 
 	UHighscoreSaver* LoadedGameObject;
 

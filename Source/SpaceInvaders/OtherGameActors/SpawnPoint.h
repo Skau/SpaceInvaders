@@ -26,6 +26,7 @@ public:
 	// Used to see if this is the boss spawnpoint
 	bool GetIfBossSpawnpoint() { return bIsBossSP; }
 
+	bool GetHaveSpawnedBoss() { return bHaveSpawnedBoss; }
 	void SetHaveSpawnedBoss(bool Value) { bHaveSpawnedBoss = Value; }
 
 	UPROPERTY(EditAnywhere)
@@ -34,10 +35,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AEnemyBoss> EnemyBoss_BP;
 
-	// If this is checked in details, nothing will spawn unless it's the boss wave (only one spawnpoint has this checked)
 	UPROPERTY(EditAnywhere)
 	bool bIsBossSP;
 
-	// Used by the gamemode to create the boss health bar
+private:
 	bool bHaveSpawnedBoss;
 };

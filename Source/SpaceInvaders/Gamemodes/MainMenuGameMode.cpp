@@ -9,10 +9,10 @@
 
 AMainMenuGameMode::AMainMenuGameMode(const FObjectInitializer& ObjectInitializer)
 {
+	PrimaryActorTick.bCanEverTick = true;
 
 	CurrentMusic = ObjectInitializer.CreateDefaultSubobject<UAudioComponent>(this, TEXT("BackgroundMusic"));
 	RootComponent = CurrentMusic;
-	PrimaryActorTick.bCanEverTick = true;
 
 	LoadHighScore();
 }
@@ -25,7 +25,7 @@ void AMainMenuGameMode::BeginPlay()
 	// Gets the current game instance
 	GameInstance = Cast<USpaceInvadersGameInstance>(GetWorld()->GetGameInstance());
 
-	if (Music != nullptr)
+	if (Music)
 	{
 		CurrentMusic->SetSound(Music);
 		CurrentMusic->bIsUISound = true;
@@ -35,8 +35,7 @@ void AMainMenuGameMode::BeginPlay()
 			CurrentMusic->Play();
 			bIsCurrentlyPlayingMusic = true;
 		}
-
-		if (!GameInstance->GetMusicAllowed())
+		else
 		{
 			CurrentMusic->Stop();
 			bIsCurrentlyPlayingMusic = false;
@@ -48,7 +47,7 @@ void AMainMenuGameMode::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 
-	if (Music != nullptr)
+	if (Music)
 	{
 		if (!GameInstance->GetMusicAllowed() && bIsCurrentlyPlayingMusic)
 		{
@@ -66,51 +65,33 @@ void AMainMenuGameMode::Tick(float DeltaSeconds)
 
 void AMainMenuGameMode::LoadHighScore()
 {
-	//*** LOADING HIGHSCORES  ***//
-	UE_LOG(LogTemp, Warning, TEXT("LOADING STARTED"))
-	// If there's any data in Highscores, clear it
-	if (HighScores.Num() > 0)
+	if (HighScores.Num())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Clearing highscores"))
 		HighScores.Empty();
 	}
 
 	LoadedGameObject = Cast<UHighscoreSaver>(UGameplayStatics::CreateSaveGameObject(UHighscoreSaver::StaticClass()));
 	LoadedGameObject = Cast<UHighscoreSaver>(UGameplayStatics::LoadGameFromSlot(LoadedGameObject->SaveSlotName, LoadedGameObject->UserIndex));
-	UE_LOG(LogTemp, Warning, TEXT("Checking to see if a file is present"))
-	if (LoadedGameObject != nullptr)
+
+	if (!LoadedGameObject)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Found file on disk"))
-	}
-	else
-	{
-		// Create a SaveObject if none are present
-		UE_LOG(LogTemp, Warning, TEXT("No file found, creating new"))
 		LoadedGameObject = Cast<UHighscoreSaver>(UGameplayStatics::CreateSaveGameObject(UHighscoreSaver::StaticClass()));
 	}
-	//  Make a temporary Array of the savefile if data is available
-	if (LoadedGameObject->GetHighScoreData().Num() > 0)
+
+	if (LoadedGameObject->GetHighScoreData().Num())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Data present on save, adding data to local highscore"))
 		auto LoadedGameData = LoadedGameObject->GetHighScoreData();
 
-		int temp = 0;
+
 		FHighScoreDataMM Data;
-		// Go through it all and add to Highscores (used for the in-game table)
 		for (auto& HighScoreData : LoadedGameData)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Adding HighscoreData index %d"), temp)
 			Data.PlayerName = HighScoreData.PlayerName;
 			Data.EnemiesKilled = HighScoreData.EnemiesKilled;
 			Data.WaveReached = HighScoreData.WaveReached;
 			Data.BossesKilled = HighScoreData.BossesKilled;
 			HighScores.Add(Data);
-			temp++;
 		}
-		UE_LOG(LogTemp, Warning, TEXT("Sorting Highscores"))
 		HighScores.Sort([](const FHighScoreDataMM& LHS, const FHighScoreDataMM& RHS) { return LHS.EnemiesKilled > RHS.EnemiesKilled; });
-		
-		UE_LOG(LogTemp, Warning, TEXT("LOADING FINISHED"))
-		//*** LOADING FINISHED ***//
 	}
 }

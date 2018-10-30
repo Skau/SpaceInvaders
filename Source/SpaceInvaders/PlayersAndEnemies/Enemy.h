@@ -24,23 +24,20 @@ public:
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	/* The speed the ship */
-	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
-	float MoveSpeed = 150.f;
-
 private:
-
-	/* The mesh component */
-	UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	class UStaticMeshComponent* ShipMeshComponent;
-
 	void Move(float DeltaTime);
 
 	void MoveLeftorRight(float DeltaTime);
 
 	void SetbCanMoveLeftOrRight();
 
-	bool bHitPlayer = false;
+	UPROPERTY(Category = Mesh, VisibleDefaultsOnly, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	class UStaticMeshComponent* ShipMeshComponent;
+
+	UPROPERTY(Category = Gameplay, EditDefaultsOnly, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	float MoveSpeed = 150.f;
+
+	bool bHitPlayer;
 
 	bool bCanMoveLeftOrRight;
 
