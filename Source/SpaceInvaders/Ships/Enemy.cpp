@@ -29,8 +29,9 @@ AEnemy::AEnemy()
 	ShipMeshComponent->OnComponentBeginOverlap.AddDynamic(this, &AEnemy::OnOverlapBegin);
 
 	bHitPlayer = false;
-	bCanMoveLeftOrRight = true;
-	MoveLeftOrRightRate = 2.f;
+
+	// Set in derived class
+	MoveSpeed = 0.0f;
 }
 
 void AEnemy::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor * OtherActor, UPrimitiveComponent * OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult)
@@ -49,37 +50,6 @@ void AEnemy::OnOverlapBegin(UPrimitiveComponent * OverlappedComp, AActor * Other
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
-	if (!bHitPlayer)
-	{
-		Move(DeltaTime);
-	}
-	// if the timer is over
-	if (bCanMoveLeftOrRight)
-	{
-		// Sets the timer to end between 1 and 3 seconds (to make it more random when they move)
-		bCanMoveLeftOrRight = false;
-		MoveLeftOrRightRate = FMath::RandRange(1, 3);
-		GetWorld()->GetTimerManager().SetTimer(MoveLeftOrRightHandle, this, &AEnemy::SetbCanMoveLeftOrRight, MoveLeftOrRightRate);
-		MoveLeftorRight(DeltaTime);
-	}
 }
-// Moves down towards the player each frame
-void AEnemy::Move(float DeltaTime)
-{  
-	FVector NewLocation = GetActorLocation() + FVector(-1.f, 0.f, 0.f) * MoveSpeed * DeltaTime;
-	SetActorLocation(NewLocation);
-}
-// The directon bool is either 1 or 0 (right or left), changes each time so you never know which way the enemy will move
-void AEnemy::MoveLeftorRight(float DeltaTime)
-{
-	FVector MoveDirection = Direction ? FVector(0.f, 350.f, 0.f) : FVector(0.f, -350.f, 0.f);
-	Direction = !Direction;
-	SetActorLocation(GetActorLocation() + MoveDirection);
-}
-// For the timer handle
-void AEnemy::SetbCanMoveLeftOrRight()
-{
-	bCanMoveLeftOrRight = true;
-}
+
 
