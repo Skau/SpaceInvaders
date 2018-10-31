@@ -8,7 +8,7 @@
 #include "Engine/CollisionProfile.h"
 
 #include "Gamemodes/SpaceInvadersGameMode.h"
-#include "Components/WeaponComponent.h"
+#include "Components/ShipWeaponComponent.h"
 #include "Components/ShipMovementComponent.h"
 #include "Enemy.h"
 
@@ -17,20 +17,19 @@ const FName ASpaceInvadersPawn::FireForwardBinding("FireForward");
 
 ASpaceInvadersPawn::ASpaceInvadersPawn()
 {	
-	// To enable on hit events
 	OnActorHit.AddDynamic(this, &ASpaceInvadersPawn::OnHit);
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> ShipMesh(TEXT("/Game/Meshes/PlayerShip/PlayerShip.PlayerShip"));
-	// Create the mesh component
+
 	ShipMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ShipMesh"));
 	RootComponent = ShipMeshComponent;
 	ShipMeshComponent->SetCollisionProfileName(UCollisionProfile::Pawn_ProfileName);
 	ShipMeshComponent->SetStaticMesh(ShipMesh.Object);
 	ShipMeshComponent->SetNotifyRigidBodyCollision(true);
 
-	WeaponComponent = CreateDefaultSubobject<UWeaponComponent>("WeaponComponent");
+	WeaponComponent = CreateDefaultSubobject<UShipWeaponComponent>("ShipWeaponComponent");
 
-	MovementComponent = CreateDefaultSubobject<UShipMovementComponent>("MovementComponent");
+	MovementComponent = CreateDefaultSubobject<UShipMovementComponent>("ShipMovementComponent");
 
 	GunOffset = FVector(180.f, 0.f, 0.f);
 }

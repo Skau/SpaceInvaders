@@ -4,14 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "WeaponComponent.generated.h"
+#include "ShipWeaponComponent.generated.h"
 
 class ASpaceInvadersPawn;
 class ASpaceInvadersGameMode;
 class ASpaceInvadersProjectile;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class SPACEINVADERS_API UWeaponComponent : public UActorComponent
+class SPACEINVADERS_API UShipWeaponComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
@@ -19,7 +19,7 @@ public:
 	void Fire();
 
 protected:	
-	UWeaponComponent();
+	UShipWeaponComponent();
 
 	virtual void BeginPlay() override;
 

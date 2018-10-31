@@ -8,7 +8,7 @@
 
 class UStaticMeshComponent;
 class UShipMovementComponent;
-class UWeaponComponent;
+class UShipWeaponComponent;
 class AEnemy;
 class ASpaceInvadersGameMode;
 
@@ -18,7 +18,6 @@ class ASpaceInvadersPawn : public APawn
 	GENERATED_BODY()
 
 public:
-	// Constructor
 	ASpaceInvadersPawn();
 
 	virtual void BeginPlay();
@@ -52,7 +51,7 @@ private:
 	UStaticMeshComponent* ShipMeshComponent;
 
 	UPROPERTY(VisibleAnywhere)
-	UWeaponComponent* WeaponComponent;
+	UShipWeaponComponent* WeaponComponent;
 
 	UPROPERTY(VisibleAnywhere)
 	UShipMovementComponent* MovementComponent;

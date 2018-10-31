@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "WeaponComponent.h"
+#include "ShipWeaponComponent.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Kismet/GameplayStatics.h"
 #include "Engine/World.h"
@@ -11,7 +11,7 @@
 #include "Ships/SpaceInvadersPawn.h"
 #include "Actors/SpaceInvadersProjectile.h"
 
-UWeaponComponent::UWeaponComponent()
+UShipWeaponComponent::UShipWeaponComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
 
@@ -21,7 +21,7 @@ UWeaponComponent::UWeaponComponent()
 	bCanFire = true;
 }
 
-void UWeaponComponent::BeginPlay()
+void UShipWeaponComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	
@@ -29,12 +29,12 @@ void UWeaponComponent::BeginPlay()
 	Player = Cast<ASpaceInvadersPawn>(GetOwner());
 }
 
-void UWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+void UShipWeaponComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
-void UWeaponComponent::Fire()
+void UShipWeaponComponent::Fire()
 {
 	if (!Player || !GameMode) { return; }
 
@@ -44,7 +44,7 @@ void UWeaponComponent::Fire()
 	}
 }
 
-void UWeaponComponent::FireShot()
+void UShipWeaponComponent::FireShot()
 {
 	FVector FireDirection = FVector(1, 0, 0);
 	FRotator FireRotation = FireDirection.Rotation();
@@ -54,7 +54,7 @@ void UWeaponComponent::FireShot()
 
 	bCanFire = false;
 
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle_ShotTimerExpired, this, &UWeaponComponent::ShotTimerExpired, FireRate);
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle_ShotTimerExpired, this, &UShipWeaponComponent::ShotTimerExpired, FireRate);
 
 	if (FireSound && GameMode->GetbIsSoundEffectsAllowed())
 	{
@@ -62,7 +62,7 @@ void UWeaponComponent::FireShot()
 	}
 }
 
-void UWeaponComponent::ShotTimerExpired()
+void UShipWeaponComponent::ShotTimerExpired()
 {
 	bCanFire = true;
 }
