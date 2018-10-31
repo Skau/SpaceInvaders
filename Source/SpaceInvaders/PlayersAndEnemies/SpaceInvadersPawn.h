@@ -7,6 +7,7 @@
 #include "SpaceInvadersPawn.generated.h"
 
 class UStaticMeshComponent;
+class UShipMovementComponent;
 class UWeaponComponent;
 class AEnemy;
 class ASpaceInvadersGameMode;
@@ -41,8 +42,6 @@ public:
 private:
 	// -- Functions -- //
 
-	void Move(float DeltaSeconds);
-
 	void PauseGame();
 
 	// -- Variables -- //
@@ -55,14 +54,14 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	UWeaponComponent* WeaponComponent;
 
+	UPROPERTY(VisibleAnywhere)
+	UShipMovementComponent* MovementComponent;
+
 	UPROPERTY(EditDefaultsOnly)
 	float Health = 100;
 	
 	UPROPERTY(EditDefaultsOnly)
 	FVector GunOffset;
-
-	UPROPERTY(EditDefaultsOnly)
-	float MoveSpeed;
 
 	static const FName MoveRightBinding;
 	static const FName FireForwardBinding;

@@ -41,7 +41,6 @@ private:
 
 	ASpaceInvadersPawn* Player;
 
-	UPROPERTY(EditDefaultsOnly)
 	ASpaceInvadersGameMode* GameMode;
 
 	bool bCanFire;
