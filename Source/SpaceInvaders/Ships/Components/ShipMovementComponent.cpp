@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "ShipMovementComponent.h"
-#include "PlayersAndEnemies/SpaceInvadersPawn.h"
+#include "Ships/SpaceInvadersPawn.h"
 
 UShipMovementComponent::UShipMovementComponent()
 {

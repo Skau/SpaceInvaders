@@ -9,10 +9,11 @@
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/Actor.h"
 #include "Engine/World.h"
+
 #include "Gamemodes/SpaceInvadersGameMode.h"
-#include "PlayersAndEnemies/SpaceInvadersPawn.h"
-#include "PlayersAndEnemies/Enemy.h"
-#include "PlayersAndEnemies/EnemyBoss.h"
+#include "Ships/SpaceInvadersPawn.h"
+#include "Ships/Enemy.h"
+#include "Ships/EnemyBoss.h"
 
 ASpaceInvadersProjectile::ASpaceInvadersProjectile()
 {

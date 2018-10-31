@@ -4,9 +4,10 @@
 #include "Engine/World.h"
 #include "TimerManager.h"
 #include "Kismet/GameplayStatics.h"
-#include "HighscoreSaver.h"
+
+#include "Other/HighscoreSaver.h"
 #include "SpaceInvadersGameInstance.h"
-#include "OtherGameActors/SpawnPoint.h"
+#include "Actors/SpawnPoint.h"
 
 AEndlessGameMode::AEndlessGameMode(const FObjectInitializer& ObjectInitializer)
 	: ASpaceInvadersGameMode(ObjectInitializer)

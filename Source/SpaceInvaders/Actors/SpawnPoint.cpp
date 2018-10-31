@@ -2,8 +2,9 @@
 
 #include "SpawnPoint.h"
 #include "Engine/World.h" 
-#include "PlayersAndEnemies/Enemy.h"
-#include "PlayersAndEnemies/EnemyBoss.h"
+
+#include "Ships/Enemy.h"
+#include "Ships/EnemyBoss.h"
 
 // Not currently in use
 ASpawnPoint::ASpawnPoint()

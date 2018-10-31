@@ -4,7 +4,8 @@
 #include "Components/AudioComponent.h"
 #include "Engine/Engine.h"
 #include "Kismet/GameplayStatics.h"
-#include "HighScoreSaver.h"
+
+#include "Other/HighScoreSaver.h"
 #include "SpaceInvadersGameInstance.h"
 
 AMainMenuGameMode::AMainMenuGameMode(const FObjectInitializer& ObjectInitializer)

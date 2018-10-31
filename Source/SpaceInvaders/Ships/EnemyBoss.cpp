@@ -7,9 +7,10 @@
 #include "Engine/StaticMesh.h"
 #include "Engine/World.h"
 #include "TimerManager.h"
+
 #include "SpaceInvadersPawn.h"
 #include "Gamemodes/SpaceInvadersGameMode.h"
-#include "OtherGameActors/SpaceInvadersProjectile.h"
+#include "Actors/SpaceInvadersProjectile.h"
 
 // Sets default values
 AEnemyBoss::AEnemyBoss()

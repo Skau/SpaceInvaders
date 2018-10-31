@@ -6,10 +6,11 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/InputComponent.h"
 #include "Engine/CollisionProfile.h"
-#include "Enemy.h"
+
 #include "Gamemodes/SpaceInvadersGameMode.h"
-#include "WeaponComponent.h"
+#include "Components/WeaponComponent.h"
 #include "Components/ShipMovementComponent.h"
+#include "Enemy.h"
 
 const FName ASpaceInvadersPawn::MoveRightBinding("MoveRight");
 const FName ASpaceInvadersPawn::FireForwardBinding("FireForward");

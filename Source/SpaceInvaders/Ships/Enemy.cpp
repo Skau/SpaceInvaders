@@ -9,8 +9,9 @@
 #include "Kismet/GameplayStatics.h"
 #include "TimerManager.h"
 #include "Math/UnrealMathUtility.h"
+
 #include "Gamemodes/SpaceInvadersGameMode.h"
-#include "PlayersAndEnemies/SpaceInvadersPawn.h"
+#include "Ships/SpaceInvadersPawn.h"
 
 // Sets default values
 AEnemy::AEnemy()

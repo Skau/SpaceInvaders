@@ -1,7 +1,6 @@
 // Copyright 1998-2017 Epic Games, Inc. All Rights Reserved.
 
 #include "SpaceInvadersGameMode.h"
-#include "PlayersAndEnemies/SpaceInvadersPawn.h"
 #include "Public/EngineUtils.h"
 #include "Kismet/GameplayStatics.h"
 #include "Math/UnrealMathUtility.h"
@@ -10,9 +9,11 @@
 #include "Engine/Engine.h"
 #include "TimerManager.h"
 #include "Containers/Array.h"
+
 #include "SpaceInvadersGameInstance.h"
-#include "PlayersAndEnemies/Enemy.h"
-#include "OtherGameActors/SpawnPoint.h"
+#include "Ships/SpaceInvadersPawn.h"
+#include "Ships/Enemy.h"
+#include "Actors/SpawnPoint.h"
 
 
 // Init default variables on construction (variables that cannot be changed through in-game settings)

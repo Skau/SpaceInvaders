@@ -8,8 +8,8 @@
 #include "Sound/SoundBase.h"
 
 #include "Gamemodes/SpaceInvadersGameMode.h"
-#include "PlayersAndEnemies/SpaceInvadersPawn.h"
-#include "OtherGameActors/SpaceInvadersProjectile.h"
+#include "Ships/SpaceInvadersPawn.h"
+#include "Actors/SpaceInvadersProjectile.h"
 
 UWeaponComponent::UWeaponComponent()
 {

@@ -3,8 +3,9 @@
 #include "ShipDestroyTrigger.h"
 #include "Engine/World.h"
 #include "Components/BoxComponent.h"
+
 #include "Gamemodes/SpaceInvadersGameMode.h"
-#include "PlayersAndEnemies/Enemy.h"
+#include "Ships/Enemy.h"
 
 // Sets default values
 AShipDestroyTrigger::AShipDestroyTrigger()
