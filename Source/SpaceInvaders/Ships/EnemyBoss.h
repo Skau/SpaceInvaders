@@ -15,16 +15,12 @@ class SPACEINVADERS_API AEnemyBoss : public AActor
 	GENERATED_BODY()
 	
 public:	
-	// Sets default values for this actor's properties
 	AEnemyBoss();
 
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Main function to control the shooting
 	void ShootAWave();
 
 	UFUNCTION()
@@ -33,14 +29,11 @@ public:
 	UPROPERTY(Category = Gameplay, EditAnywhere, BlueprintReadWrite)
 	float MoveSpeed = 25.f;
 
-	// Used everytime the ship is hit
 	void DecrementHealth() { Health--; }
 
-	// Used by the UI
 	UFUNCTION(BlueprintCallable)
 	float GetHealth() { return Health; }
 
-	// For spawning the correct projectile
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ASpaceInvadersProjectile> Projectile_BP;
 
