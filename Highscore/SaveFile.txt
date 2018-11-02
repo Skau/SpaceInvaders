@@ -1,6 +1,0 @@
-{
-	"Name": "oplel",
-	"BossKills": 0,
-	"WaveReached": 8,
-	"EnemiesKilled": 5
-}

@@ -70,14 +70,17 @@ void AMainMenuGameMode::Tick(float DeltaSeconds)
 
 void AMainMenuGameMode::LoadHighScore()
 {
-	TSharedPtr<FJsonObject> JSonObject = MakeShareable(new FJsonObject);
+	if (HighScores.Num())
+	{
+		HighScores.Empty();
+	}
 
+	TSharedPtr<FJsonObject> JSonObject = MakeShareable(new FJsonObject);
 
 	FString FolderName = "Highscore";
 	FString FileName = "SaveFile.txt";
 	FString JsonString = "";
 
-	// Get reference to file manager
 	IPlatformFile& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
 
 	auto Directory = FPaths::ProjectDir() + "/" + FolderName;
@@ -89,52 +92,17 @@ void AMainMenuGameMode::LoadHighScore()
 
 		if (JsonString.Len())
 		{
-			UE_LOG(LogTemp, Warning, TEXT("%s"), *JsonString)
+			FHighScoreDataMM data;
+			TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(JsonString);
+			if (FJsonSerializer::Deserialize(Reader, JSonObject))
+			{
+				data.PlayerName = JSonObject->GetStringField("Name");
+				data.BossesKilled = JSonObject->GetNumberField("BossKills");
+				data.WaveReached = JSonObject->GetNumberField("WaveReached");
+				data.EnemiesKilled = JSonObject->GetNumberField("EnemiesKilled");
+				HighScores.Add(data);
+			}
 		}
 	}
-
-
-
-	//if (JsonString.Len())
-	//{
-	//	FHighScoreDataMM data;
-	//	TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(JsonString);
-	//	if (FJsonSerializer::Deserialize(Reader, JSonObject))
-	//	{
-	//		data.PlayerName = JSonObject->GetStringField("Name");
-	//		data.BossesKilled = JSonObject->GetNumberField("BossKills");
-	//		data.WaveReached = JSonObject->GetNumberField("WaveReached");
-	//		data.EnemiesKilled = JSonObject->GetNumberField("EnemiesKilled");
-	//	}
-	//}
-
-	if (HighScores.Num())
-	{
-		HighScores.Empty();
-	}
-
-	LoadedGameObject = Cast<UHighscoreSaver>(UGameplayStatics::CreateSaveGameObject(UHighscoreSaver::StaticClass()));
-	LoadedGameObject = Cast<UHighscoreSaver>(UGameplayStatics::LoadGameFromSlot(LoadedGameObject->SaveSlotName, LoadedGameObject->UserIndex));
-
-	if (!LoadedGameObject)
-	{
-		LoadedGameObject = Cast<UHighscoreSaver>(UGameplayStatics::CreateSaveGameObject(UHighscoreSaver::StaticClass()));
-	}
-
-	if (LoadedGameObject->GetHighScoreData().Num())
-	{
-		auto LoadedGameData = LoadedGameObject->GetHighScoreData();
-
-
-		FHighScoreDataMM Data;
-		for (auto& HighScoreData : LoadedGameData)
-		{
-			Data.PlayerName = HighScoreData.PlayerName;
-			Data.EnemiesKilled = HighScoreData.EnemiesKilled;
-			Data.WaveReached = HighScoreData.WaveReached;
-			Data.BossesKilled = HighScoreData.BossesKilled;
-			HighScores.Add(Data);
-		}
-		HighScores.Sort([](const FHighScoreDataMM& LHS, const FHighScoreDataMM& RHS) { return LHS.EnemiesKilled > RHS.EnemiesKilled; });
-	}
+	HighScores.Sort([](const FHighScoreDataMM& LHS, const FHighScoreDataMM& RHS) { return LHS.EnemiesKilled > RHS.EnemiesKilled; });
 }

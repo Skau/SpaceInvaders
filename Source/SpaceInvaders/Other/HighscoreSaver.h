@@ -31,7 +31,6 @@ class SPACEINVADERS_API UHighscoreSaver : public USaveGame
 	GENERATED_BODY()
 
 public:
-
 	UHighscoreSaver();
 
 	TArray<FHighScoreInfo>& GetHighScoreData() { return HighScoreArray; }
@@ -49,10 +48,4 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	TArray<FHighScoreInfo> HighScoreArray;
-
-
-
-
-	
-	
 };

@@ -107,26 +107,6 @@ void AEndlessGameMode::WinCheck()
 
 void AEndlessGameMode::SaveData(FHighScoreDataGM data)
 {
-	LoadedGameObject = Cast<UHighscoreSaver>(UGameplayStatics::CreateSaveGameObject(UHighscoreSaver::StaticClass()));
-	LoadedGameObject = Cast<UHighscoreSaver>(UGameplayStatics::LoadGameFromSlot(LoadedGameObject->SaveSlotName, LoadedGameObject->UserIndex));
-	if (!LoadedGameObject)
-	{
-		LoadedGameObject = Cast<UHighscoreSaver>(UGameplayStatics::CreateSaveGameObject(UHighscoreSaver::StaticClass()));
-	}
-	auto Data = LoadedGameObject->HighScoreInfo;
-
-	Data.PlayerName = data.PlayerName;
-	Data.BossesKilled = data.BossesKilled;
-	Data.WaveReached = data.WaveReached;
-	Data.EnemiesKilled = data.EnemiesKilled;
-
-	LoadedGameObject->AddDataToArray(Data);
-
-	UGameplayStatics::SaveGameToSlot(LoadedGameObject, LoadedGameObject->SaveSlotName, LoadedGameObject->UserIndex);
-
-
-	//*** ------------------------- ***///
-
 	// Create a JsonObject and add the data
 	TSharedPtr<FJsonObject> JSonObject = MakeShareable(new FJsonObject);
 	JSonObject->SetStringField("Name", data.PlayerName);
