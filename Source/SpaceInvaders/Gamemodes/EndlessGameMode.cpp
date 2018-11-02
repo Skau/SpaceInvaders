@@ -107,33 +107,54 @@ void AEndlessGameMode::WinCheck()
 
 void AEndlessGameMode::SaveData(FHighScoreDataGM data)
 {
+	FString FolderName = "Highscore";
+	FString FileName = "SaveFile.txt";
+	FString JsonString = "";
+	auto Directory = FPaths::ProjectDir() + "/" + FolderName;
+	FString AbsolutePath = Directory + "/" + FileName;
+	TArray<TSharedPtr<FJsonValue>> ObjArray;
+	IPlatformFile& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
+
+
+	// If the directory is found
+	if (PlatformFile.DirectoryExists(*Directory))
+	{
+		// Load current data in text file if exists
+		if (FFileHelper::LoadFileToString(JsonString, *AbsolutePath))
+		{
+			TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(JsonString);
+			TSharedPtr<FJsonObject> CurrentDataJsonObject = MakeShareable(new FJsonObject);
+			if (FJsonSerializer::Deserialize(Reader, CurrentDataJsonObject))
+			{
+				// Get array 
+				ObjArray = CurrentDataJsonObject->GetArrayField("Players");
+			}
+		}
+	}
+		
 	// Create a JsonObject and add the data
-	TSharedPtr<FJsonObject> JSonObject = MakeShareable(new FJsonObject);
-	JSonObject->SetStringField("Name", data.PlayerName);
-	JSonObject->SetNumberField("BossKills", data.BossesKilled);
-	JSonObject->SetNumberField("WaveReached", data.WaveReached);
-	JSonObject->SetNumberField("EnemiesKilled", data.EnemiesKilled);
+	TSharedPtr<FJsonObject> NewPlayerDataJsonObject = MakeShareable(new FJsonObject);
+	NewPlayerDataJsonObject->SetStringField("Name", data.PlayerName);
+	NewPlayerDataJsonObject->SetNumberField("BossKills", data.BossesKilled);
+	NewPlayerDataJsonObject->SetNumberField("WaveReached", data.WaveReached);
+	NewPlayerDataJsonObject->SetNumberField("EnemiesKilled", data.EnemiesKilled);
+	TSharedRef<FJsonValueObject> JsonValue = MakeShareable(new FJsonValueObject(NewPlayerDataJsonObject));
+	ObjArray.Add(JsonValue);
+
+	TSharedPtr<FJsonObject> DataToSaveJsonObject = MakeShareable(new FJsonObject);
+	DataToSaveJsonObject->SetArrayField("Players", ObjArray);
 
 	// Serialize the data to FString
 	FString outputString;
 	TSharedRef <TJsonWriter<TCHAR, TPrettyJsonPrintPolicy<TCHAR>>> JsonWriter = TJsonWriterFactory<TCHAR, TPrettyJsonPrintPolicy<TCHAR>>::Create(&outputString);
 
 	// If successful, write the string to a text file
-	if (FJsonSerializer::Serialize(JSonObject.ToSharedRef(), JsonWriter))
+	if (FJsonSerializer::Serialize(DataToSaveJsonObject.ToSharedRef(), JsonWriter))
 	{
-		FString FolderName = "Highscore";
-		FString FileName = "SaveFile.txt";
-
 		// Get reference to file manager
 		IPlatformFile& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
 
 		auto Directory = FPaths::ProjectDir() + "/" + FolderName;
-
-		// Create directory if it doesn't exist
-		if (!PlatformFile.DirectoryExists(*Directory))
-		{
-			PlatformFile.CreateDirectory(*Directory);
-		}
 
 		FString AbsolutePath = Directory + "/" + FileName;
 

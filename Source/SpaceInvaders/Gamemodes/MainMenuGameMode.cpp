@@ -75,8 +75,6 @@ void AMainMenuGameMode::LoadHighScore()
 		HighScores.Empty();
 	}
 
-	TSharedPtr<FJsonObject> JSonObject = MakeShareable(new FJsonObject);
-
 	FString FolderName = "Highscore";
 	FString FileName = "SaveFile.txt";
 	FString JsonString = "";
@@ -93,14 +91,21 @@ void AMainMenuGameMode::LoadHighScore()
 		if (JsonString.Len())
 		{
 			FHighScoreDataMM data;
+			TSharedPtr<FJsonObject> JSonObject = MakeShareable(new FJsonObject);
 			TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(JsonString);
 			if (FJsonSerializer::Deserialize(Reader, JSonObject))
 			{
-				data.PlayerName = JSonObject->GetStringField("Name");
-				data.BossesKilled = JSonObject->GetNumberField("BossKills");
-				data.WaveReached = JSonObject->GetNumberField("WaveReached");
-				data.EnemiesKilled = JSonObject->GetNumberField("EnemiesKilled");
-				HighScores.Add(data);
+				auto PlayerData = JSonObject->GetArrayField("Players");
+
+				for (auto& player : PlayerData)
+				{
+					auto temp = player->AsObject();
+					data.PlayerName = temp->GetStringField("Name");
+					data.BossesKilled = temp->GetNumberField("BossKills");
+					data.WaveReached = temp->GetNumberField("WaveReached");
+					data.EnemiesKilled = temp->GetNumberField("EnemiesKilled");
+					HighScores.Add(data);
+				}
 			}
 		}
 	}

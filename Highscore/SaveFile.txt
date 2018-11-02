@@ -1,0 +1,16 @@
+{
+	"Players": [
+		{
+			"Name": "poteten",
+			"BossKills": 0,
+			"WaveReached": 8,
+			"EnemiesKilled": 21
+		},
+		{
+			"Name": "apekatt",
+			"BossKills": 0,
+			"WaveReached": 9,
+			"EnemiesKilled": 14
+		}
+	]
+}
