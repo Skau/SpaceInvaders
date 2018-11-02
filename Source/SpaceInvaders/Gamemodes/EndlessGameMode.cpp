@@ -4,6 +4,12 @@
 #include "Engine/World.h"
 #include "TimerManager.h"
 #include "Kismet/GameplayStatics.h"
+#include "Serialization/JsonSerializer.h"
+#include "Misc/Paths.h"
+#include "HAL/PlatformFilemanager.h"
+#include "CoreMisc.h"
+#include "GenericPlatform/GenericPlatformFile.h"
+#include "Misc/FileHelper.h"
 
 #include "Other/HighscoreSaver.h"
 #include "SpaceInvadersGameInstance.h"
@@ -117,4 +123,48 @@ void AEndlessGameMode::SaveData(FHighScoreDataGM data)
 	LoadedGameObject->AddDataToArray(Data);
 
 	UGameplayStatics::SaveGameToSlot(LoadedGameObject, LoadedGameObject->SaveSlotName, LoadedGameObject->UserIndex);
+
+
+	//*** ------------------------- ***///
+
+	// Create a JsonObject and add the data
+	TSharedPtr<FJsonObject> JSonObject = MakeShareable(new FJsonObject);
+	JSonObject->SetStringField("Name", data.PlayerName);
+	JSonObject->SetNumberField("BossKills", data.BossesKilled);
+	JSonObject->SetNumberField("WaveReached", data.WaveReached);
+	JSonObject->SetNumberField("EnemiesKilled", data.EnemiesKilled);
+
+	// Serialize the data to FString
+	FString outputString;
+	TSharedRef <TJsonWriter<TCHAR, TPrettyJsonPrintPolicy<TCHAR>>> JsonWriter = TJsonWriterFactory<TCHAR, TPrettyJsonPrintPolicy<TCHAR>>::Create(&outputString);
+
+	// If successful, write the string to a text file
+	if (FJsonSerializer::Serialize(JSonObject.ToSharedRef(), JsonWriter))
+	{
+		FString FolderName = "Highscore";
+		FString FileName = "SaveFile.txt";
+
+		// Get reference to file manager
+		IPlatformFile& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
+
+		auto Directory = FPaths::ProjectDir() + "/" + FolderName;
+
+		// Create directory if it doesn't exist
+		if (!PlatformFile.DirectoryExists(*Directory))
+		{
+			PlatformFile.CreateDirectory(*Directory);
+		}
+
+		FString AbsolutePath = Directory + "/" + FileName;
+
+		// Save to file
+		if (FFileHelper::SaveStringToFile(outputString, *AbsolutePath))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Sucessfully wrote to file"))
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Failed writing to file"))
+		}
+	}
 }

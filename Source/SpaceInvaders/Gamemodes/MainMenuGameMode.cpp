@@ -4,6 +4,10 @@
 #include "Components/AudioComponent.h"
 #include "Engine/Engine.h"
 #include "Kismet/GameplayStatics.h"
+#include "Serialization/JsonReader.h"
+#include "Serialization/JsonSerializer.h"
+#include "Misc/FileHelper.h"
+#include "HAL/PlatformFilemanager.h"
 
 #include "Other/HighScoreSaver.h"
 #include "SpaceInvadersGameInstance.h"
@@ -66,6 +70,44 @@ void AMainMenuGameMode::Tick(float DeltaSeconds)
 
 void AMainMenuGameMode::LoadHighScore()
 {
+	TSharedPtr<FJsonObject> JSonObject = MakeShareable(new FJsonObject);
+
+
+	FString FolderName = "Highscore";
+	FString FileName = "SaveFile.txt";
+	FString JsonString = "";
+
+	// Get reference to file manager
+	IPlatformFile& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
+
+	auto Directory = FPaths::ProjectDir() + "/" + FolderName;
+	
+	if (PlatformFile.DirectoryExists(*Directory))
+	{
+		FString AbsolutePath = Directory + "/" + FileName;
+		FFileHelper::LoadFileToString(JsonString, *AbsolutePath);
+
+		if (JsonString.Len())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("%s"), *JsonString)
+		}
+	}
+
+
+
+	//if (JsonString.Len())
+	//{
+	//	FHighScoreDataMM data;
+	//	TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(JsonString);
+	//	if (FJsonSerializer::Deserialize(Reader, JSonObject))
+	//	{
+	//		data.PlayerName = JSonObject->GetStringField("Name");
+	//		data.BossesKilled = JSonObject->GetNumberField("BossKills");
+	//		data.WaveReached = JSonObject->GetNumberField("WaveReached");
+	//		data.EnemiesKilled = JSonObject->GetNumberField("EnemiesKilled");
+	//	}
+	//}
+
 	if (HighScores.Num())
 	{
 		HighScores.Empty();

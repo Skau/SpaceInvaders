@@ -22,8 +22,6 @@ class ASpaceInvadersGameMode : public AGameModeBase
 public:
 
 	// Getters for variables used by the UI widget during game
-
-
 	UFUNCTION(BlueprintCallable)
 	int GetWavesLeft() { return TotalWavesLeft; }
 
