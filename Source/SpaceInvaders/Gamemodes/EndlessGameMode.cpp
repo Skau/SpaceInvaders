@@ -11,6 +11,7 @@
 #include "GenericPlatform/GenericPlatformFile.h"
 #include "Misc/FileHelper.h"
 
+#include "Other/HttpService.h"
 #include "Other/HighscoreSaver.h"
 #include "SpaceInvadersGameInstance.h"
 #include "Actors/SpawnPoint.h"
@@ -107,6 +108,15 @@ void AEndlessGameMode::WinCheck()
 
 void AEndlessGameMode::SaveData(FHighScoreDataGM data)
 {
+	FHighScoreInfo d;
+	d.Name = data.PlayerName;
+	d.BossKills = data.BossesKilled;
+	d.EnemiesKilled = data.EnemiesKilled;
+	d.WaveReached = data.WaveReached;
+	UE_LOG(LogTemp, Warning, TEXT("Creating HttpService.."))
+	auto HttpService = GetWorld()->SpawnActor<AHttpService>();
+	HttpService->TestFunction(d);
+
 	FString FolderName = "Highscore";
 	FString FileName = "SaveFile.txt";
 	FString JsonString = "";
@@ -146,7 +156,8 @@ void AEndlessGameMode::SaveData(FHighScoreDataGM data)
 
 	// Serialize the data to FString
 	FString outputString;
-	TSharedRef <TJsonWriter<TCHAR, TPrettyJsonPrintPolicy<TCHAR>>> JsonWriter = TJsonWriterFactory<TCHAR, TPrettyJsonPrintPolicy<TCHAR>>::Create(&outputString);
+	TSharedRef <TJsonWriter<TCHAR, TPrettyJsonPrintPolicy<TCHAR>>> JsonWriter = 
+		TJsonWriterFactory<TCHAR, TPrettyJsonPrintPolicy<TCHAR>>::Create(&outputString);
 
 	// If successful, write the string to a text file
 	if (FJsonSerializer::Serialize(DataToSaveJsonObject.ToSharedRef(), JsonWriter))

@@ -47,9 +47,6 @@ void AMainMenuGameMode::BeginPlay()
 			bIsCurrentlyPlayingMusic = false;
 		}
 	}
-
-	UE_LOG(LogTemp, Warning, TEXT("Creating HttpService.."))
-	auto HttpService = GetWorld()->SpawnActor<AHttpService>();
 }
 
 void AMainMenuGameMode::Tick(float DeltaSeconds)

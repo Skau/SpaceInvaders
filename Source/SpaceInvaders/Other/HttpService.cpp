@@ -12,37 +12,14 @@ void AHttpService::BeginPlay()
 	Super::BeginPlay();
 	Http = &FHttpModule::Get();
 	
-	FHighScoreInfo highscore;
-	highscore.PlayerName = "Spiller1";
-	highscore.BossesKilled = 17;
-	highscore.WaveReached = 25;
-	highscore.EnemiesKilled = 240;
+	//FHighScoreInfo highscore;
+	//highscore.Name = "Spiller2";
+	//highscore.BossKills = 17;
+	//highscore.WaveReached = 25;
+	//highscore.EnemiesKilled = 240;
 
-	UE_LOG(LogTemp, Warning, TEXT("TestFunction(highscore);"))
-	TestFunction(highscore);
-}
-
-void AHttpService::TestFunction(FHighScoreInfo HighScoreInfo)
-{
-	FString ContentJsonString;
-	GetJsonStringFromStruct<FHighScoreInfo>(HighScoreInfo, ContentJsonString);
-
-	TSharedRef<IHttpRequest> Request = PostRequest("data", ContentJsonString);
-	Request->OnProcessRequestComplete().BindUObject(this, &AHttpService::TestFunctionRespone);
-	Send(Request);
-}
-
-void AHttpService::TestFunctionRespone(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
-{
-	if (!ResponseIsValid(Response, bWasSuccessful)) return;
-
-	FHighScoreInfo HighScoreInfo;
-	GetStructFromJsonString<FHighScoreInfo>(Response, HighScoreInfo);
-
-	UE_LOG(LogTemp, Warning, TEXT("Name: %s"), *HighScoreInfo.PlayerName);
-	UE_LOG(LogTemp, Warning, TEXT("Bosses killed: %d"), HighScoreInfo.BossesKilled);
-	UE_LOG(LogTemp, Warning, TEXT("Wave reached: %d"), HighScoreInfo.WaveReached);
-	UE_LOG(LogTemp, Warning, TEXT("Enemies killed: %d"), HighScoreInfo.EnemiesKilled);
+	//UE_LOG(LogTemp, Warning, TEXT("TestFunction(highscore);"))
+	//TestFunction(highscore);
 }
 
 void AHttpService::SetAutorizationHash(FString Hash, TSharedRef<IHttpRequest>& Request)
@@ -60,13 +37,15 @@ TSharedRef<IHttpRequest> AHttpService::RequestWithRoute(FString Subroute)
 
 void AHttpService::SetRequestHeaders(TSharedRef<IHttpRequest>& Request)
 {
-	Request->SetHeader(TEXT("Content-Type"), TEXT("application/json"));
+	//Request->SetHeader(TEXT("User-Agent"), TEXT("X-UnrealEngine-Agent"));
+	Request->SetHeader("Content-Type", "application/json");
+	//Request->SetHeader(TEXT("Accepts"), TEXT("application/json"));
 }
 
 TSharedRef<IHttpRequest> AHttpService::GetRequest(FString Subroute)
 {
 	TSharedRef<IHttpRequest> Request = RequestWithRoute(Subroute);
-	Request->SetVerb("Get");
+	Request->SetVerb("GET");
 	return Request;
 }
 
@@ -74,6 +53,7 @@ TSharedRef<IHttpRequest> AHttpService::PostRequest(FString Subroute, FString Con
 {
 	TSharedRef<IHttpRequest> Request = RequestWithRoute(Subroute);
 	Request->SetVerb("POST");
+	Request->SetContentAsString(ContentJsonString);
 	return Request;
 }
 
@@ -94,10 +74,24 @@ bool AHttpService::ResponseIsValid(FHttpResponsePtr Response, bool bWasSuccessfu
 
 }
 
+void AHttpService::GetJsonStringFromStruct(FHighScoreInfo FilledStruct, FString & StringOutPut)
+{
+	TSharedPtr<FJsonObject> NewPlayerDataJsonObject = MakeShareable(new FJsonObject);
+	NewPlayerDataJsonObject->SetStringField("Name", FilledStruct.Name);
+	NewPlayerDataJsonObject->SetNumberField("BossKills", FilledStruct.BossKills);
+	NewPlayerDataJsonObject->SetNumberField("WaveReached", FilledStruct.WaveReached);
+	NewPlayerDataJsonObject->SetNumberField("EnemiesKilled", FilledStruct.EnemiesKilled);
+
+	TSharedRef <TJsonWriter<TCHAR>> JsonWriter =
+		TJsonWriterFactory<>::Create(&StringOutPut);
+
+	FJsonSerializer::Serialize(NewPlayerDataJsonObject.ToSharedRef(), JsonWriter);
+}
+
 template<typename StructType>
 void AHttpService::GetJsonStringFromStruct(StructType FilledStruct, FString & StringOutPut)
 {
-	FJsonObjectConverter::UStructToJsonObjectString(StructType::StaticStruct(), &FilledStruct, StringOutPut, 0, 0);
+	FJsonObjectConverter::UStructToJsonObjectString(StructType::StaticStruct(), &FilledStruct, StringOutPut, 0, 0, 0, 0);
 }
 
 template<typename StructType>
@@ -106,4 +100,42 @@ void AHttpService::GetStructFromJsonString(FHttpResponsePtr Response, StructType
 	StructType StructData;
 	FString JsonString = Response->GetContentAsString();
 	FJsonObjectConverter::JsonObjectStringToUStruct<StructType>(JsonString, &StructOutPut, 0, 0);
+}
+
+void AHttpService::TestFunction(FHighScoreInfo HighScoreInfo)
+{
+	FString ContentJsonString;
+	GetJsonStringFromStruct(HighScoreInfo, ContentJsonString);
+	TSharedRef<IHttpRequest> Request = PostRequest("highscore/add", ContentJsonString);
+	Request->OnProcessRequestComplete().BindUObject(this, &AHttpService::TestFunctionRespone);
+	Send(Request);
+
+	FString FolderName = "Highscore";
+	FString FileName = "PHPTestFile.txt";
+	auto Directory = FPaths::ProjectDir() + "/" + FolderName;
+	FString AbsolutePath = Directory + "/" + FileName;
+	IPlatformFile& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
+
+	// Save to file
+	if (FFileHelper::SaveStringToFile(ContentJsonString, *AbsolutePath))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Sucessfully wrote to file"))
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Failed writing to file"))
+	}
+}
+
+void AHttpService::TestFunctionRespone(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
+{
+	if (!ResponseIsValid(Response, bWasSuccessful)) return;
+
+	FHighScoreInfo HighScoreInfo;
+	GetStructFromJsonString<FHighScoreInfo>(Response, HighScoreInfo);
+
+	UE_LOG(LogTemp, Warning, TEXT("Name: %s"), *HighScoreInfo.Name);
+	UE_LOG(LogTemp, Warning, TEXT("Bosses killed: %d"), HighScoreInfo.BossKills);
+	UE_LOG(LogTemp, Warning, TEXT("Wave reached: %d"), HighScoreInfo.WaveReached);
+	UE_LOG(LogTemp, Warning, TEXT("Enemies killed: %d"), HighScoreInfo.EnemiesKilled);
 }

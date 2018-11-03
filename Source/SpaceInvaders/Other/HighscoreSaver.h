@@ -13,13 +13,13 @@ struct FHighScoreInfo
 	GENERATED_BODY()
 
 	UPROPERTY(VisibleAnywhere)
-	FString PlayerName;
+	FString Name;
 	UPROPERTY(VisibleAnywhere)
 	int WaveReached;
 	UPROPERTY(VisibleAnywhere)
 	int EnemiesKilled;
 	UPROPERTY(VisibleAnywhere)
-	int BossesKilled;
+	int BossKills;
 };
 
 /**

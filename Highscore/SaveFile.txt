@@ -11,6 +11,12 @@
 			"BossKills": 0,
 			"WaveReached": 9,
 			"EnemiesKilled": 14
+		},
+		{
+			"Name": "Testerino",
+			"BossKills": 0,
+			"WaveReached": 10,
+			"EnemiesKilled": 24
 		}
 	]
 }

@@ -25,7 +25,7 @@ public:
 
 private:
 	FHttpModule* Http;
-	FString ApiBaseUrl = "http://localhost/stuff/spaceinvaders/index.html/";
+	FString ApiBaseUrl = "http://localhost/stuff/spaceinvaders/phptest.php/";
 	FString AuthorizationHeader = TEXT("Autorization");
 	void SetAutorizationHash(FString Hash, TSharedRef<IHttpRequest>& Request);
 
@@ -40,6 +40,7 @@ private:
 
 	template <typename StructType>
 	void GetJsonStringFromStruct(StructType FilledStruct, FString& StringOutPut);
+	void GetJsonStringFromStruct(FHighScoreInfo FilledStruct, FString& StringOutPut);
 	template <typename StructType>
 	void GetStructFromJsonString(FHttpResponsePtr Response, StructType& StructOutPut);
 };
