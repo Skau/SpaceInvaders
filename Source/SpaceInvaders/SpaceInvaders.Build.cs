@@ -10,7 +10,7 @@ public class SpaceInvaders : ModuleRules
 
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore" });
 
-        PrivateDependencyModuleNames.AddRange(new string[] { "Json", "JsonUtilities" });
+        PrivateDependencyModuleNames.AddRange(new string[] { "Http", "Json", "JsonUtilities" });
 
     }
 }
