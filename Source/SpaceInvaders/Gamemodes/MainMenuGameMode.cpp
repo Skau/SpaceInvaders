@@ -9,6 +9,7 @@
 #include "Misc/FileHelper.h"
 #include "HAL/PlatformFilemanager.h"
 
+#include "Other/HttpService.h"
 #include "Other/HighScoreSaver.h"
 #include "SpaceInvadersGameInstance.h"
 #include "Other/HttpService.h"
@@ -20,7 +21,7 @@ AMainMenuGameMode::AMainMenuGameMode(const FObjectInitializer& ObjectInitializer
 	CurrentMusic = ObjectInitializer.CreateDefaultSubobject<UAudioComponent>(this, TEXT("BackgroundMusic"));
 	RootComponent = CurrentMusic;
 
-	LoadHighScore();
+	//LoadHighScore();
 }
 
 // Init the game variables that has to be set at runtime
@@ -71,44 +72,11 @@ void AMainMenuGameMode::Tick(float DeltaSeconds)
 
 void AMainMenuGameMode::LoadHighScore()
 {
+	// TODO Highscores needs to be already added here somehow from http get response
+
 	if (HighScores.Num())
 	{
-		HighScores.Empty();
+		HighScores.Sort([](const FHighScoreDataMM& LHS, const FHighScoreDataMM& RHS) { return LHS.EnemiesKilled > RHS.EnemiesKilled; });
+		CreateHighScore();
 	}
-
-	FString FolderName = "Highscore";
-	FString FileName = "SaveFile.txt";
-	FString JsonString = "";
-
-	IPlatformFile& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
-
-	auto Directory = FPaths::ProjectDir() + "/" + FolderName;
-	
-	if (PlatformFile.DirectoryExists(*Directory))
-	{
-		FString AbsolutePath = Directory + "/" + FileName;
-		FFileHelper::LoadFileToString(JsonString, *AbsolutePath);
-
-		if (JsonString.Len())
-		{
-			FHighScoreDataMM data;
-			TSharedPtr<FJsonObject> JSonObject = MakeShareable(new FJsonObject);
-			TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(JsonString);
-			if (FJsonSerializer::Deserialize(Reader, JSonObject))
-			{
-				auto PlayerData = JSonObject->GetArrayField("Players");
-
-				for (auto& player : PlayerData)
-				{
-					auto temp = player->AsObject();
-					data.PlayerName = temp->GetStringField("Name");
-					data.BossesKilled = temp->GetNumberField("BossKills");
-					data.WaveReached = temp->GetNumberField("WaveReached");
-					data.EnemiesKilled = temp->GetNumberField("EnemiesKilled");
-					HighScores.Add(data);
-				}
-			}
-		}
-	}
-	HighScores.Sort([](const FHighScoreDataMM& LHS, const FHighScoreDataMM& RHS) { return LHS.EnemiesKilled > RHS.EnemiesKilled; });
 }

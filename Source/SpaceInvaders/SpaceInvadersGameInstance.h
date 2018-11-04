@@ -6,6 +6,8 @@
 #include "Engine/GameInstance.h"
 #include "SpaceInvadersGameInstance.generated.h"
 
+class AHttpService;
+
 /**
  * 
  */
@@ -13,7 +15,6 @@ UCLASS()
 class SPACEINVADERS_API USpaceInvadersGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
-
 
 	// Used for the settings menu
 public:
@@ -48,11 +49,14 @@ public:
 
 private:
 	bool bHighScoreIsLoaded;
-	bool bIsMusicAllowed = true;
-	bool bIsSoundEffectsAllowed = true;
-	int TotalWaves = 10;
-	int SpawnRate = 3;
+
 	FString PlayerName;
-	
-	
+
+	bool bIsMusicAllowed = false;
+
+	bool bIsSoundEffectsAllowed = false;
+
+	int TotalWaves = 10;
+
+	int SpawnRate = 3;
 };

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "SpaceInvadersGameModeBase.h"
 #include "SpaceInvadersGameMode.generated.h"
 
 // Forward declarations
@@ -15,7 +16,7 @@ class USoundBase;
 class UAudioComponent;
 
 UCLASS(MinimalAPI)
-class ASpaceInvadersGameMode : public AGameModeBase
+class ASpaceInvadersGameMode : public ASpaceInvadersGameModeBase
 {
 	GENERATED_BODY()
 

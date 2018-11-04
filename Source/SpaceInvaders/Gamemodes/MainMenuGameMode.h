@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "SpaceInvadersGameModeBase.h"
 #include "MainMenuGameMode.generated.h"
 
 class UHighscoreSaver;
@@ -30,7 +31,7 @@ struct FHighScoreDataMM
  * 
  */
 UCLASS()
-class SPACEINVADERS_API AMainMenuGameMode : public AGameModeBase
+class SPACEINVADERS_API AMainMenuGameMode : public ASpaceInvadersGameModeBase
 {
 	GENERATED_BODY()
 	
@@ -62,6 +63,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	TArray<FHighScoreDataMM> HighScores;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void CreateHighScore();
 
 private:
 	UHighscoreSaver* LoadedGameObject;

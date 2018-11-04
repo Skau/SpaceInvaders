@@ -95,88 +95,16 @@ void AEndlessGameMode::WinCheck()
 			GameInstance->SetPlayerName("Player");
 		}
 
-		FHighScoreDataGM HighScoreData;
-		// Temporary datastruct to add the last game played to the Highscore array
-		HighScoreData.PlayerName = GameInstance->GetPlayerName();
+		FHighScoreInfo HighScoreData;
+		HighScoreData.Name = GameInstance->GetPlayerName();
 		HighScoreData.EnemiesKilled = EnemyShipsKilled;
 		HighScoreData.WaveReached = CurrentWave;
-		HighScoreData.BossesKilled = BossKills;
-		HighScores.Add(HighScoreData);
+		HighScoreData.BossKills = BossKills;
 		SaveData(HighScoreData);
 	}
 }
 
-void AEndlessGameMode::SaveData(FHighScoreDataGM data)
+void AEndlessGameMode::SaveData(FHighScoreInfo data)
 {
-	FHighScoreInfo d;
-	d.Name = data.PlayerName;
-	d.BossKills = data.BossesKilled;
-	d.EnemiesKilled = data.EnemiesKilled;
-	d.WaveReached = data.WaveReached;
-	UE_LOG(LogTemp, Warning, TEXT("Creating HttpService.."))
-	auto HttpService = GetWorld()->SpawnActor<AHttpService>();
-	HttpService->TestFunction(d);
-
-	FString FolderName = "Highscore";
-	FString FileName = "SaveFile.txt";
-	FString JsonString = "";
-	auto Directory = FPaths::ProjectDir() + "/" + FolderName;
-	FString AbsolutePath = Directory + "/" + FileName;
-	TArray<TSharedPtr<FJsonValue>> ObjArray;
-	IPlatformFile& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
-
-
-	// If the directory is found
-	if (PlatformFile.DirectoryExists(*Directory))
-	{
-		// Load current data in text file if exists
-		if (FFileHelper::LoadFileToString(JsonString, *AbsolutePath))
-		{
-			TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(JsonString);
-			TSharedPtr<FJsonObject> CurrentDataJsonObject = MakeShareable(new FJsonObject);
-			if (FJsonSerializer::Deserialize(Reader, CurrentDataJsonObject))
-			{
-				// Get array 
-				ObjArray = CurrentDataJsonObject->GetArrayField("Players");
-			}
-		}
-	}
-		
-	// Create a JsonObject and add the data
-	TSharedPtr<FJsonObject> NewPlayerDataJsonObject = MakeShareable(new FJsonObject);
-	NewPlayerDataJsonObject->SetStringField("Name", data.PlayerName);
-	NewPlayerDataJsonObject->SetNumberField("BossKills", data.BossesKilled);
-	NewPlayerDataJsonObject->SetNumberField("WaveReached", data.WaveReached);
-	NewPlayerDataJsonObject->SetNumberField("EnemiesKilled", data.EnemiesKilled);
-	TSharedRef<FJsonValueObject> JsonValue = MakeShareable(new FJsonValueObject(NewPlayerDataJsonObject));
-	ObjArray.Add(JsonValue);
-
-	TSharedPtr<FJsonObject> DataToSaveJsonObject = MakeShareable(new FJsonObject);
-	DataToSaveJsonObject->SetArrayField("Players", ObjArray);
-
-	// Serialize the data to FString
-	FString outputString;
-	TSharedRef <TJsonWriter<TCHAR, TPrettyJsonPrintPolicy<TCHAR>>> JsonWriter = 
-		TJsonWriterFactory<TCHAR, TPrettyJsonPrintPolicy<TCHAR>>::Create(&outputString);
-
-	// If successful, write the string to a text file
-	if (FJsonSerializer::Serialize(DataToSaveJsonObject.ToSharedRef(), JsonWriter))
-	{
-		// Get reference to file manager
-		IPlatformFile& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
-
-		auto Directory = FPaths::ProjectDir() + "/" + FolderName;
-
-		FString AbsolutePath = Directory + "/" + FileName;
-
-		// Save to file
-		if (FFileHelper::SaveStringToFile(outputString, *AbsolutePath))
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Sucessfully wrote to file"))
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Failed writing to file"))
-		}
-	}
+	HttpService->AddDataToHighscore(data);
 }

@@ -7,7 +7,7 @@
 #include "EndlessGameMode.generated.h"
 
 // Forward declarations
-class UHighscoreSaver;
+struct FHighScoreInfo;
 
 USTRUCT(BlueprintType)
 struct FHighScoreDataGM
@@ -36,12 +36,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	int GetCurrentWave() { return CurrentWave; }
 
-	UFUNCTION(BlueprintCallable)
-	UHighscoreSaver* GetLoadedGameObject() { return LoadedGameObject; }
-
-	UPROPERTY(BlueprintReadWrite)
-	TArray<FHighScoreDataGM> HighScores;
-
 private:
 	AEndlessGameMode(const FObjectInitializer& ObjectInitializer);
 
@@ -51,10 +45,7 @@ private:
 
 	void WinCheck();
 	
-	void SaveData(FHighScoreDataGM data);
+	void SaveData(FHighScoreInfo data);
 
 	int CurrentWaveCounter;
-
-	UHighscoreSaver* LoadedGameObject;
-
 };

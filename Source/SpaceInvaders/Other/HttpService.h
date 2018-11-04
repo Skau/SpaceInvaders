@@ -10,6 +10,8 @@
 #include "HighscoreSaver.h"
 #include "HttpService.generated.h"
 
+class AMainMenuGameMode;
+
 UCLASS()
 class SPACEINVADERS_API AHttpService : public AActor
 {
@@ -20,12 +22,16 @@ public:
 
 	virtual void BeginPlay() override;
 
-	void TestFunction(FHighScoreInfo HighScoreInfo);
-	void TestFunctionRespone(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
+	void AddDataToHighscore(FHighScoreInfo HighScoreInfo);
+	void AddDataToHighScoreResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
+
+	UFUNCTION(BlueprintCallable)
+	void GetHighScores();
+	void GetHighScoresResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSucessful);
 
 private:
 	FHttpModule* Http;
-	FString ApiBaseUrl = "http://localhost/stuff/spaceinvaders/phptest.php/";
+	FString ApiBaseUrl = "http://localhost/stuff/spaceinvaders/";
 	FString AuthorizationHeader = TEXT("Autorization");
 	void SetAutorizationHash(FString Hash, TSharedRef<IHttpRequest>& Request);
 
@@ -43,6 +49,7 @@ private:
 	void GetJsonStringFromStruct(FHighScoreInfo FilledStruct, FString& StringOutPut);
 	template <typename StructType>
 	void GetStructFromJsonString(FHttpResponsePtr Response, StructType& StructOutPut);
+	void GetStructFromJsonString(FHttpResponsePtr Response, FHighScoreInfo& StructOutPut);
 };
 
 
