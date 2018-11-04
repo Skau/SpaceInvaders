@@ -12,7 +12,7 @@
 
 class AMainMenuGameMode;
 
-UCLASS()
+UCLASS(Blueprintable, hideCategories = (Rendering, Replication, Input, Actor, "Actor Tick"))
 class SPACEINVADERS_API AHttpService : public AActor
 {
 	GENERATED_BODY()
@@ -22,14 +22,16 @@ public:
 
 	virtual void BeginPlay() override;
 
-	void AddDataToHighscore(FHighScoreInfo HighScoreInfo);
-	void AddDataToHighScoreResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
+	void RequestAddHighscoreToDatabase(FHighScoreInfo HighScoreInfo);
 
 	UFUNCTION(BlueprintCallable)
-	void GetHighScores();
-	void GetHighScoresResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSucessful);
+	void RequestHighscoresFromDatabase();
 
 private:
+	void ResponseAddHighscoreToDatabase(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
+
+	void ResponseHighscoresFromDatabase(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSucessful);
+
 	FHttpModule* Http;
 	FString ApiBaseUrl = "http://localhost/stuff/spaceinvaders/";
 	FString AuthorizationHeader = TEXT("Autorization");
@@ -46,11 +48,15 @@ private:
 
 	template <typename StructType>
 	void GetJsonStringFromStruct(StructType FilledStruct, FString& StringOutPut);
-	void GetJsonStringFromStruct(FHighScoreInfo FilledStruct, FString& StringOutPut);
+	
+	void GetJsonStringFromHighScoreInfo(FHighScoreInfo FilledStruct, FString& StringOutPut);
+	
 	template <typename StructType>
 	void GetStructFromJsonString(FHttpResponsePtr Response, StructType& StructOutPut);
-	void GetStructFromJsonString(FHttpResponsePtr Response, FHighScoreInfo& StructOutPut);
-	void GetArrayOfStructFromJsonString(FHttpResponsePtr Response, TArray<FHighScoreInfo>& OutArray);
+	
+	void GetHighScoreInfoFromJsonString(FHttpResponsePtr Response, FHighScoreInfo& StructOutPut);
+
+	void GetArrayOfHighScoreInfoFromJsonString(FHttpResponsePtr Response, TArray<FHighScoreInfo>& OutArray);
 };
 
 

@@ -6,23 +6,7 @@
 #include "SpaceInvadersGameMode.h"
 #include "EndlessGameMode.generated.h"
 
-// Forward declarations
 struct FHighScoreInfo;
-
-USTRUCT(BlueprintType)
-struct FHighScoreDataGM
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FString PlayerName;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int WaveReached;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int EnemiesKilled;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int BossesKilled;
-};
 
 /**
  * 
@@ -45,7 +29,5 @@ private:
 
 	void WinCheck();
 	
-	void SaveData(FHighScoreInfo data);
-
 	int CurrentWaveCounter;
 };

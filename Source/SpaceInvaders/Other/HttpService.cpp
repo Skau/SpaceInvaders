@@ -72,7 +72,7 @@ void AHttpService::GetJsonStringFromStruct(StructType FilledStruct, FString & St
 	FJsonObjectConverter::UStructToJsonObjectString(StructType::StaticStruct(), &FilledStruct, StringOutPut, 0, 0, 0, 0);
 }
 
-void AHttpService::GetJsonStringFromStruct(FHighScoreInfo FilledStruct, FString & StringOutPut)
+void AHttpService::GetJsonStringFromHighScoreInfo(FHighScoreInfo FilledStruct, FString & StringOutPut)
 {
 	TSharedPtr<FJsonObject> NewPlayerDataJsonObject = MakeShareable(new FJsonObject);
 	NewPlayerDataJsonObject->SetStringField("Name", FilledStruct.Name);
@@ -94,11 +94,11 @@ void AHttpService::GetStructFromJsonString(FHttpResponsePtr Response, StructType
 	FJsonObjectConverter::JsonObjectStringToUStruct<StructType>(JsonString, &StructOutPut, 0, 0);
 }
 
-void AHttpService::GetStructFromJsonString(FHttpResponsePtr Response, FHighScoreInfo & StructOutPut)
+void AHttpService::GetHighScoreInfoFromJsonString(FHttpResponsePtr Response, FHighScoreInfo & StructOutPut)
 {
-
 }
-void AHttpService::GetArrayOfStructFromJsonString(FHttpResponsePtr Response, TArray<FHighScoreInfo>& OutArray)
+
+void AHttpService::GetArrayOfHighScoreInfoFromJsonString(FHttpResponsePtr Response, TArray<FHighScoreInfo>& OutArray)
 {
 	FString JsonString = Response->GetContentAsString();
 	if (JsonString.Len())
@@ -117,52 +117,53 @@ void AHttpService::GetArrayOfStructFromJsonString(FHttpResponsePtr Response, TAr
 				data.WaveReached = temp->GetNumberField("WaveReached");
 				data.EnemiesKilled = temp->GetNumberField("EnemiesKilled");
 				OutArray.Add(data);
-				// TODO Fix so main menu game mode gets all these
 			}
 		}
 	}
 }
 
-void AHttpService::AddDataToHighscore(FHighScoreInfo HighScoreInfo)
+void AHttpService::RequestAddHighscoreToDatabase(FHighScoreInfo HighScoreInfo)
 {
 	FString ContentJsonString;
-	GetJsonStringFromStruct(HighScoreInfo, ContentJsonString);
+	GetJsonStringFromHighScoreInfo(HighScoreInfo, ContentJsonString);
 	TSharedRef<IHttpRequest> Request = PostRequest("addData.php/", ContentJsonString);
-	Request->OnProcessRequestComplete().BindUObject(this, &AHttpService::AddDataToHighScoreResponse);
+	Request->OnProcessRequestComplete().BindUObject(this, &AHttpService::ResponseAddHighscoreToDatabase);
 	Send(Request);
 }
 
-void AHttpService::AddDataToHighScoreResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
+void AHttpService::ResponseAddHighscoreToDatabase(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
 {
 	if (!ResponseIsValid(Response, bWasSuccessful)) return;
 	
 	UE_LOG(LogTemp, Warning, TEXT("Successfully added score to database"))
 }
 
-void AHttpService::GetHighScores()
+void AHttpService::RequestHighscoresFromDatabase()
 {
 	TSharedRef<IHttpRequest> Request = GetRequest("getData.php?data=getALL");
-	Request->OnProcessRequestComplete().BindUObject(this, &AHttpService::GetHighScoresResponse);
+	Request->OnProcessRequestComplete().BindUObject(this, &AHttpService::ResponseHighscoresFromDatabase);
 	Send(Request);
 }
 
-void AHttpService::GetHighScoresResponse(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSucessful)
+void AHttpService::ResponseHighscoresFromDatabase(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSucessful)
 {
 	if (!ResponseIsValid(Response, bWasSucessful)) return;
+
+
 	auto GameMode = Cast<AMainMenuGameMode>(GetWorld()->GetAuthGameMode());
 	if (GameMode)
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("%s"), *Response->GetContentAsString())
-
 		TArray<FHighScoreInfo> HighScoreInfo;
 	
-		// TODO Get array from db to high score info array and give to main menu game mode
-		GetArrayOfStructFromJsonString(Response, HighScoreInfo);
+		GetArrayOfHighScoreInfoFromJsonString(Response, HighScoreInfo);
 
-		TArray<FHighScoreDataMM> Highscores;
+		UE_LOG(LogTemp, Warning, TEXT("Successfully retrieved highscores from databse"))
+
+		// Converting to struct that main menu expects
+		TArray<FHighScoreData> Highscores;
 		for (auto HighScore : HighScoreInfo)
 		{
-			FHighScoreDataMM data;
+			FHighScoreData data;
 			data.PlayerName = HighScore.Name;
 			data.BossesKilled = HighScore.BossKills;
 			data.EnemiesKilled = HighScore.EnemiesKilled;

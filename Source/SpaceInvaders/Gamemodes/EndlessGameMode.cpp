@@ -92,7 +92,7 @@ void AEndlessGameMode::WinCheck()
 		// Sets a default name if the player didn't make one
 		if (GameInstance->GetPlayerName().Len() == 0)
 		{
-			GameInstance->SetPlayerName("Player");
+			GameInstance->SetPlayerName("Unknown Player");
 		}
 
 		FHighScoreInfo HighScoreData;
@@ -100,11 +100,6 @@ void AEndlessGameMode::WinCheck()
 		HighScoreData.EnemiesKilled = EnemyShipsKilled;
 		HighScoreData.WaveReached = CurrentWave;
 		HighScoreData.BossKills = BossKills;
-		SaveData(HighScoreData);
+		HttpService->RequestAddHighscoreToDatabase(HighScoreData);
 	}
-}
-
-void AEndlessGameMode::SaveData(FHighScoreInfo data)
-{
-	HttpService->AddDataToHighscore(data);
 }

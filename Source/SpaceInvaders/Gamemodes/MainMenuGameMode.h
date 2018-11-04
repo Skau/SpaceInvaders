@@ -13,7 +13,7 @@ class UAudioComponent;
 class USpaceInvadersGameInstance;
 
 USTRUCT(BlueprintType)
-struct FHighScoreDataMM
+struct FHighScoreData
 {
 	GENERATED_BODY()
 
@@ -52,17 +52,17 @@ public:
 	void SetHighScoreIsOpen(bool Value) { bHighScoreIsOpen = Value; }
 	
 	UFUNCTION(BlueprintCallable)
-	TArray<FHighScoreDataMM> GetHighScores() { return HighScores; }
+	TArray<FHighScoreData> GetHighScores() { return HighScores; }
 
 	// Used to set the background music
 	UPROPERTY(BlueprintReadWrite)
 	USoundBase* Music;
 
 	UFUNCTION(BlueprintCallable)
-	void LoadHighScore(TArray<FHighScoreDataMM> inHighScore);
+	void LoadHighScore(TArray<FHighScoreData> inHighScore);
 
 	UPROPERTY(BlueprintReadWrite)
-	TArray<FHighScoreDataMM> HighScores;
+	TArray<FHighScoreData> HighScores;
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void CreateHighScore();

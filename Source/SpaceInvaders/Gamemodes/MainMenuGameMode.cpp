@@ -20,8 +20,6 @@ AMainMenuGameMode::AMainMenuGameMode(const FObjectInitializer& ObjectInitializer
 
 	CurrentMusic = ObjectInitializer.CreateDefaultSubobject<UAudioComponent>(this, TEXT("BackgroundMusic"));
 	RootComponent = CurrentMusic;
-
-	//LoadHighScore();
 }
 
 // Init the game variables that has to be set at runtime
@@ -70,17 +68,18 @@ void AMainMenuGameMode::Tick(float DeltaSeconds)
 	}
 }
 
-void AMainMenuGameMode::LoadHighScore(TArray<FHighScoreDataMM> inHighScore)
+void AMainMenuGameMode::LoadHighScore(TArray<FHighScoreData> inHighScore)
 {
-	// TODO Highscores needs to be already added here somehow from http get response
+	if (HighScores.Num())
+	{
+		HighScores.Empty();
+	}
+
 	for (auto HighScore : inHighScore)
 	{
 		HighScores.Add(HighScore);
 	}
 
-	if (HighScores.Num())
-	{
-		HighScores.Sort([](const FHighScoreDataMM& LHS, const FHighScoreDataMM& RHS) { return LHS.EnemiesKilled > RHS.EnemiesKilled; });
-		CreateHighScore();
-	}
+	HighScores.Sort([](const FHighScoreData& LHS, const FHighScoreData& RHS) { return LHS.BossesKilled > RHS.BossesKilled; });
+	CreateHighScore();
 }
