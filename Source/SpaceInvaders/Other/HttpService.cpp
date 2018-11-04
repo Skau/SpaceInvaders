@@ -115,7 +115,7 @@ void AHttpService::GetArrayOfHighScoreInfoFromJsonString(FHttpResponsePtr Respon
 				data.Name = temp->GetStringField("Name");
 				data.BossKills = temp->GetNumberField("BossKills");
 				data.WaveReached = temp->GetNumberField("WaveReached");
-				data.EnemiesKilled = temp->GetNumberField("EnemiesKilled");
+				data.EnemiesKilled = temp->GetNumberField("EnemyKills");
 				OutArray.Add(data);
 			}
 		}
