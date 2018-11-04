@@ -70,9 +70,13 @@ void AMainMenuGameMode::Tick(float DeltaSeconds)
 	}
 }
 
-void AMainMenuGameMode::LoadHighScore()
+void AMainMenuGameMode::LoadHighScore(TArray<FHighScoreDataMM> inHighScore)
 {
 	// TODO Highscores needs to be already added here somehow from http get response
+	for (auto HighScore : inHighScore)
+	{
+		HighScores.Add(HighScore);
+	}
 
 	if (HighScores.Num())
 	{

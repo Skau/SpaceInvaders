@@ -59,7 +59,7 @@ public:
 	USoundBase* Music;
 
 	UFUNCTION(BlueprintCallable)
-	void LoadHighScore();
+	void LoadHighScore(TArray<FHighScoreDataMM> inHighScore);
 
 	UPROPERTY(BlueprintReadWrite)
 	TArray<FHighScoreDataMM> HighScores;

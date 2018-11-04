@@ -66,6 +66,12 @@ bool AHttpService::ResponseIsValid(FHttpResponsePtr Response, bool bWasSuccessfu
 	}
 }
 
+template<typename StructType>
+void AHttpService::GetJsonStringFromStruct(StructType FilledStruct, FString & StringOutPut)
+{
+	FJsonObjectConverter::UStructToJsonObjectString(StructType::StaticStruct(), &FilledStruct, StringOutPut, 0, 0, 0, 0);
+}
+
 void AHttpService::GetJsonStringFromStruct(FHighScoreInfo FilledStruct, FString & StringOutPut)
 {
 	TSharedPtr<FJsonObject> NewPlayerDataJsonObject = MakeShareable(new FJsonObject);
@@ -80,7 +86,19 @@ void AHttpService::GetJsonStringFromStruct(FHighScoreInfo FilledStruct, FString 
 	FJsonSerializer::Serialize(NewPlayerDataJsonObject.ToSharedRef(), JsonWriter);
 }
 
+template<typename StructType>
+void AHttpService::GetStructFromJsonString(FHttpResponsePtr Response, StructType & StructOutPut)
+{
+	StructType StructData;
+	FString JsonString = Response->GetContentAsString();
+	FJsonObjectConverter::JsonObjectStringToUStruct<StructType>(JsonString, &StructOutPut, 0, 0);
+}
+
 void AHttpService::GetStructFromJsonString(FHttpResponsePtr Response, FHighScoreInfo & StructOutPut)
+{
+
+}
+void AHttpService::GetArrayOfStructFromJsonString(FHttpResponsePtr Response, TArray<FHighScoreInfo>& OutArray)
 {
 	FString JsonString = Response->GetContentAsString();
 	if (JsonString.Len())
@@ -89,33 +107,20 @@ void AHttpService::GetStructFromJsonString(FHttpResponsePtr Response, FHighScore
 		TSharedRef<TJsonReader<>> Reader = TJsonReaderFactory<>::Create(JsonString);
 		if (FJsonSerializer::Deserialize(Reader, JSonObject))
 		{
-			auto PlayerData = JSonObject->GetArrayField("Players");
-
+			auto PlayerData = JSonObject->GetArrayField("players");
 			for (auto& player : PlayerData)
 			{
 				auto temp = player->AsObject();
-				StructOutPut.Name = temp->GetStringField("name");
-				StructOutPut.BossKills = temp->GetNumberField("bossKills");
-				StructOutPut.WaveReached = temp->GetNumberField("waveReached");
-				StructOutPut.EnemiesKilled = temp->GetNumberField("enemiesKilled");
+				FHighScoreInfo data;
+				data.Name = temp->GetStringField("Name");
+				data.BossKills = temp->GetNumberField("BossKills");
+				data.WaveReached = temp->GetNumberField("WaveReached");
+				data.EnemiesKilled = temp->GetNumberField("EnemiesKilled");
+				OutArray.Add(data);
 				// TODO Fix so main menu game mode gets all these
 			}
 		}
 	}
-}
-
-template<typename StructType>
-void AHttpService::GetJsonStringFromStruct(StructType FilledStruct, FString & StringOutPut)
-{
-	FJsonObjectConverter::UStructToJsonObjectString(StructType::StaticStruct(), &FilledStruct, StringOutPut, 0, 0, 0, 0);
-}
-
-template<typename StructType>
-void AHttpService::GetStructFromJsonString(FHttpResponsePtr Response, StructType & StructOutPut)
-{
-	StructType StructData;
-	FString JsonString = Response->GetContentAsString();
-	FJsonObjectConverter::JsonObjectStringToUStruct<StructType>(JsonString, &StructOutPut, 0, 0);
 }
 
 void AHttpService::AddDataToHighscore(FHighScoreInfo HighScoreInfo)
@@ -136,7 +141,7 @@ void AHttpService::AddDataToHighScoreResponse(FHttpRequestPtr Request, FHttpResp
 
 void AHttpService::GetHighScores()
 {
-	TSharedRef<IHttpRequest> Request = GetRequest("getData.php?data=Hello");
+	TSharedRef<IHttpRequest> Request = GetRequest("getData.php?data=getALL");
 	Request->OnProcessRequestComplete().BindUObject(this, &AHttpService::GetHighScoresResponse);
 	Send(Request);
 }
@@ -147,20 +152,23 @@ void AHttpService::GetHighScoresResponse(FHttpRequestPtr Request, FHttpResponseP
 	auto GameMode = Cast<AMainMenuGameMode>(GetWorld()->GetAuthGameMode());
 	if (GameMode)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *Response->GetContentAsString())
+		//UE_LOG(LogTemp, Warning, TEXT("%s"), *Response->GetContentAsString())
 
-
-		//FHighScoreInfo HighScoreInfo;
+		TArray<FHighScoreInfo> HighScoreInfo;
 	
-		//// TODO Get array from db to high score info array and give to main menu game mode
-		//GetStructFromJsonString(Response, HighScoreInfo);
+		// TODO Get array from db to high score info array and give to main menu game mode
+		GetArrayOfStructFromJsonString(Response, HighScoreInfo);
 
-		//UE_LOG(LogTemp, Warning, TEXT("Name: "), *HighScoreInfo.Name)
-		//UE_LOG(LogTemp, Warning, TEXT("EnemiesKilled: "), *HighScoreInfo.Name)
-		//UE_LOG(LogTemp, Warning, TEXT("Name: "), *HighScoreInfo.Name)
-		//UE_LOG(LogTemp, Warning, TEXT("Name: "), *HighScoreInfo.Name)
-
-		//UE_LOG(LogTemp, Warning, TEXT("Found Main Menu Gamemode, Loading Highscores.."))
-		//GameMode->LoadHighScore();
+		TArray<FHighScoreDataMM> Highscores;
+		for (auto HighScore : HighScoreInfo)
+		{
+			FHighScoreDataMM data;
+			data.PlayerName = HighScore.Name;
+			data.BossesKilled = HighScore.BossKills;
+			data.EnemiesKilled = HighScore.EnemiesKilled;
+			data.WaveReached = HighScore.WaveReached;
+			Highscores.Add(data);
+		}
+		GameMode->LoadHighScore(Highscores);
 	}
 }

@@ -50,6 +50,7 @@ private:
 	template <typename StructType>
 	void GetStructFromJsonString(FHttpResponsePtr Response, StructType& StructOutPut);
 	void GetStructFromJsonString(FHttpResponsePtr Response, FHighScoreInfo& StructOutPut);
+	void GetArrayOfStructFromJsonString(FHttpResponsePtr Response, TArray<FHighScoreInfo>& OutArray);
 };
 
 
