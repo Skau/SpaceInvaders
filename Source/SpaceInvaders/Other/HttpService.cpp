@@ -135,6 +135,8 @@ void AHttpService::ResponseAddHighscoreToDatabase(FHttpRequestPtr Request, FHttp
 {
 	if (!ResponseIsValid(Response, bWasSuccessful)) return;
 	
+	UE_LOG(LogTemp, Warning, TEXT("%s"), *Response->GetContentAsString())
+
 	UE_LOG(LogTemp, Warning, TEXT("Successfully added score to database"))
 }
 

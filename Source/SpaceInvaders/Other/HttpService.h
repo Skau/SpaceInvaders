@@ -33,7 +33,7 @@ private:
 	void ResponseHighscoresFromDatabase(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSucessful);
 
 	FHttpModule* Http;
-	FString ApiBaseUrl = "http://localhost/games/spaceinvaders/";
+	FString ApiBaseUrl = "https://www.mickydbros.no/prophet/spaceinvaders/";
 	FString AuthorizationHeader = TEXT("Autorization");
 	void SetAutorizationHash(FString Hash, TSharedRef<IHttpRequest>& Request);
 
