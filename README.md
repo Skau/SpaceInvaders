@@ -1,7 +1,8 @@
 # SpaceInvaders
 
 The first compulsory assignment we had that was related to UE4. 
-The requirements were something that resembled the original Space Invaders, but I took it a step further
+
+The requirements were something that resembled the original Space Invaders, but I took it a step further.
 
 - Two game modes
   - Normal
